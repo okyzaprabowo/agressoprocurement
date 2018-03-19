@@ -1,0 +1,364 @@
+﻿@model IEnumerable<LenProcurementApp.Models.PoDelivered>
+@{
+    ViewBag.Title = "Barang Tiba";
+    //ViewBag.SubTitle = ViewBag.bapb;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (Model == null)
+    {
+        return;
+    }
+}
+<div id="delivered-result"></div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Kode DPB</td>
+                            <td>: @ViewBag.dpb</td>
+                        </tr>
+                        <tr>
+                            <td>Kode PO</td>
+                            <td>: @ViewBag.po</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-body">
+                <p><i>Keterangan:</i></p>
+                @if (ViewBag.addDelivered)
+                {
+                <p><textarea style="width:100%;" placeholder="Tambahkan keterangan disini..." name="note" id="note-model">@ViewBag.note</textarea></p>
+                }
+                else
+                {
+                    if (ViewBag.note != null && ViewBag.note != "")
+                    {
+                        <p>@ViewBag.note</p>
+                    }
+                    else
+                    {
+                        <p>Tidak ada keterangan</p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body">
+                <input type="hidden" name="status" id="status-model" value="@ViewBag.status" />
+                <div class="statusDeliv none" id="statusId"></div>
+                @if (ViewBag.addDelivered)
+                {
+                    <br />
+                    <button id="save-change" class="btn btn-primary btn-block">Simpan Semua Perubahan</button>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="box box-primary">
+            @*<div class="box-header">
+                <h3 class="box-title text-blue">Dibuat pada tanggal @ViewBag.created</h3>
+                <h3 class="box-title text-green pull-right">Sampai pada tanggal 31/01/2016</h3>
+            </div>*@
+            <div class="box-body">
+                <table id="lendatatable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width:20px;">No</th>
+                            <th>
+                                <label>
+                                    @if (ViewBag.addDelivered)
+                                    {
+                                    <input type="checkbox" id="productAll" onchange="" class="minimal-red">
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" id="productAll" onchange="productAll(this)" class="minimal-red" disabled>
+                                    }
+                                    <strong>Product</strong>
+                                </label>
+                            </th>
+                            <th>Product (T)</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th style="width:100px;">Qty Datang</th>
+                            <th>Sisa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyProduct">
+                        @foreach (var item in Model.Select((value, i) => new { i, value }))
+                        {
+                            <tr class="noted-tr">
+                                <td>@(item.i + 1)</td>
+                                <td>
+                                    <label title="@item.value.product">
+                                        @if (ViewBag.addDelivered)
+                                        {
+                                            <input type="checkbox" id="product_@(item.i + 1)" class="dProduct minimal-red" onchange="productCheck(@(item.i + 1))">
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" id="product_@(item.i + 1)" class="dProduct minimal-red" onchange="productCheck(@(item.i + 1))" disabled>
+                                        }
+
+                                        <span id="product-model-@(item.i + 1)">@item.value.product</span>
+                                    </label>
+                                </td>
+                                @{  string str = item.value.product_t;
+                                    string strKat = !String.IsNullOrWhiteSpace(str) && str.Length >= 70
+                                        ? str.Substring(0, 70) + "..."
+                                        : str;}
+                                <td title="@str">@strKat</td>
+                                <td id="qtyItem_@(item.i + 1)" class="dQty">@item.value.qty</td>
+                                <td>@item.value.unit</td>
+                                @if (ViewBag.addDelivered)
+                                {
+                                    <td>@Html.TextBoxFor(m => item.value.qty_delivered, new { @class = "form-control form-control-nopadding dDelivered", id = "itemDelivered_" + (item.i + 1), @type = "number", onchange = "onChangeDelivered(" + (item.i + 1) + ")", Name= "___" + (item.i + 1) })</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.TextBoxFor(m => item.value.qty_delivered, new { @class = "form-control form-control-nopadding dDelivered", id = "itemDelivered_" + (item.i + 1), @type = "number", onchange = "onChangeDelivered(" + (item.i + 1) + ")", @readonly = "true" })</td>
+                                }
+                                <td class="text-bold dNotDelivered" id="notDelivered_@(item.i + 1)">@(item.value.qty - item.value.qty_delivered)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                @if (Session["pageNumber"] != null)
+                {
+                    <a href="~/Dashboard/Index?page=@Session["pageNumber"]" class="btn btn-default">Kembali ke Dashboard</a>
+                }
+                else
+                {
+                    <a href="~/Dashboard/Index" class="btn btn-default">Kembali ke Dashboard</a>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        var table, completeCheck = 0, productCount = 0, changeAll = true, notDelCur = 0;
+
+        $(document).ready(function(){
+            @if (!ViewBag.addDelivered) {
+                @Html.Raw("readonlyAction()");
+            }
+            table = $("#lendatatable").DataTable();
+            var arrayTable = table.rows();
+            productCount = arrayTable[0].length;
+
+            checkRemains();
+        });
+
+        // New
+
+        $('#productAll').on('ifClicked', function(){
+            //changeAll = true;
+            var _this = $(this);
+            var rows = table.rows({ 'search': 'applied' }).nodes();
+            var rowData = $('input[type="checkbox"]', rows);
+            if(!_this.is(":checked")){
+                rowData.iCheck("check");
+            } else {
+                rowData.iCheck("uncheck");
+            }
+        });
+
+        $('.dProduct').on('ifClicked', function(){
+            //changeAll = true;
+            //var _this = $(this);
+            //var itemIndex = getIndex(_this[0].id);
+            //productCheck(itemIndex, _this.is(":checked"));
+        });
+
+        $('.dProduct').on('ifChanged', function(){
+            if(changeAll){
+                var _this = $(this);
+                var itemIndex = getIndex(_this[0].id);
+                productCheck(itemIndex, _this.is(":checked"));
+            }
+        });
+
+        function getIndex(product){
+            return product.substring(8);
+        }
+
+        function productCheck(item, isChecked)
+        {
+            var numberIndex = Number(item);
+            numberIndex = numberIndex - 1;
+            var qtyItem = Number(table.cell(numberIndex, 3).data());
+            var itemDelivered = table.cell(numberIndex, 5);
+            var notDelivered = table.cell(numberIndex, 6);
+            if(isChecked){
+                itemDelivered.data('<input class="form-control form-control-nopadding dDelivered" name="___'+item+'" id="itemDelivered_'+item+'" onchange="onChangeDelivered('+item+')" type="number" value="'+qtyItem+'">');
+                notDelivered.data(0);
+                completeCheck++;
+            } else {
+                itemDelivered.data('<input class="form-control form-control-nopadding dDelivered" name="___'+item+'" id="itemDelivered_'+item+'" onchange="onChangeDelivered('+item+')" type="number" value="0">');
+                notDelivered.data(qtyItem);
+                completeCheck--;
+            }
+            changeClass();
+        }
+
+        function readonlyAction() {
+            $("input").prop("readonly", true);
+        }
+
+        function changeClass() {
+            var statusId = $("#statusId");
+            var styleParent = "statusDeliv";
+            var allProduct = $("#productAll");
+            statusId.removeClass();
+            //console.log(completeCheck+" - "+notDelCur);
+            if (completeCheck == productCount) {
+                statusId.addClass(styleParent + " complete");
+                statusId.text("Status: Sudah sampai semua");
+                $("#status-model").val("@ViewBag.full");
+                allProduct.iCheck("check");
+            } else if (completeCheck > 0 || notDelCur > 0) {
+                statusId.addClass(styleParent + " partially");
+                statusId.text("Status: Baru sampai sebagian");
+                $("#status-model").val("@ViewBag.partial");
+                allProduct.iCheck("uncheck");
+            } else {
+                statusId.addClass(styleParent + " none");
+                statusId.text("Status: Belum sampai satu pun");
+                $("#status-model").val("@ViewBag.none");
+                allProduct.iCheck("uncheck");
+            }
+            notDelCur = 0;
+        }
+
+        $("#save-change").on("click", function () {
+            loader(true);
+            var url = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Po/DeliveredBoard";
+            var note = $("#note-model").val();
+            var status = $("#status-model").val();
+            var rowSize = productCount;
+            var objectData = { po: @ViewBag.po, noteModel: note, statusModel: status };
+            var arrayObject = [];
+
+            var dataNew = table.$('input').serialize();
+            var dataNew = dataNew.split('&');
+
+            var dataNewArray = [];
+            for (var i = 0; i < dataNew.length; i++){
+                var dn = dataNew[i].split('=');
+                var rep = dn[0].replace('___','');
+                rep = Number(rep-1);
+                dataNewArray[rep] = Number(dn[1]);
+            }
+
+            for (var i = 0; i < rowSize; i++){
+                var product = table.cell(i, 1).data();
+                product = $(product);
+                product = product[0].title;
+                var qtyDatang = Number(dataNewArray[i]);
+                var newObject = {product: product, qty_delivered: qtyDatang};
+                arrayObject.push(newObject);
+            }
+            objectData.model = arrayObject;
+            console.log(objectData);
+            $.post(url, objectData, function (data) {
+                var result;
+                if(data == "True"){
+                    result = '<div class="alert alert-success alert-dismissable" id="success-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="success-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Berhasil disimpan. </div>';
+                } else {
+                    result = '<div class="alert alert-danger alert-dismissable" id="failed-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="failed-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Gagal disimpan. Silahkan coba lagi atau hubungi Administrator. </div>';
+                }
+                resulting(result);
+            }).fail(function(){
+                resulting('<div class="alert alert-danger alert-dismissable" id="failed-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="failed-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Gagal disimpan. Silahkan coba lagi atau hubungi Administrator. </div>');
+            }).always(function(){
+                loader(false);
+            });
+        });
+
+        function checkRemains(){
+            //changeAll = true;
+            var rowSize = productCount;
+            for (var item = 0; item < rowSize; item++) {
+                var qtyItem = Number(table.cell(item, 3).data());
+                var qtyNotDeliver = Number(table.cell(item, 6).data());
+                //if(qtyNotDeliver < qtyItem){
+                //    notDelCur++;
+                //}
+                if(qtyNotDeliver == 0){
+                    var myRow = table.row(item).nodes();
+                    var rowData = $('input[type="checkbox"]', myRow);
+                    rowData.iCheck("check");
+                } else if(qtyItem != qtyNotDeliver){
+                    notDelCur++;
+                }
+            }
+            changeClass();
+        }
+
+        // End New
+
+        // Old
+
+        function onChangeDelivered(item)
+        {
+            //changeAll = false;
+            var productItem = $("#product_"+item);
+            var qtyItem = Number($("#qtyItem_"+item).text());
+            var itemDelivered = $("#itemDelivered_"+item);
+            var notDelivered = $("#notDelivered_" + item);
+
+            var diffValue = qtyItem - notDelivered.text();
+
+            //console.log(qtyItem + " - " + itemDelivered.val() + " - " + notDelivered.text());
+            if(itemDelivered.val() < diffValue){
+                if(itemDelivered.val() == 0){
+                    itemDelivered.val(0)
+                } else {
+                    itemDelivered.val(diffValue)
+                    return false;
+                }
+            }
+
+            if(Number(itemDelivered.val()) <= 0){
+                itemDelivered.val(0);
+            }
+            if(Number(itemDelivered.val()) >= qtyItem){
+                itemDelivered.val(qtyItem);
+            }
+
+            notDelivered.text(qtyItem - Number(itemDelivered.val()));
+
+            if(Number(notDelivered.text()) == 0){
+                $("#product_"+item).iCheck("check");
+                completeCheck++;
+            } else if(Number(notDelivered.text()) > 0){
+                //$("#product_"+item).iCheck("uncheck");
+                notDelCur = Number(itemDelivered.val());
+            }
+
+            table.draw();
+
+            changeClass();
+        }
+
+        function resulting(result){
+            $("#delivered-result").html(result);
+        }
+    </script>
+}

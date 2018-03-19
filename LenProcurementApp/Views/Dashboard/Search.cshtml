@@ -1,0 +1,275 @@
+﻿@*@model IEnumerable<LenProcurementApp.Models.NewMainDashboard>*@
+
+@model PagedList.IPagedList<LenProcurementApp.Models.NewMainDashboard>
+@using PagedList.Mvc
+@using LenProcurementApp.Models
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Pencarian Data";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (Model == null)
+    {
+        return;
+    }
+    int i = (Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber);
+    i = i == 1 ? 0 : (i - 1) * 10;
+    int maxCharDetail = 10;
+    string empty = "<center><i class='fa fa-ban'></i></center>";
+    string cutThis = null;
+    string cutString = null;
+    Search options = ViewBag.options;
+
+    ViewBag.catView = "";
+    switch (options.category)
+    {
+        case "dpb":
+            ViewBag.catView = "DPB";
+            break;
+        case "po":
+            ViewBag.catView = "PO";
+            break;
+        case "spph":
+            ViewBag.catView = "SPPH";
+            break;
+        case "jcode":
+            ViewBag.catView = "Job Code";
+            break;
+        case "plk":
+            ViewBag.catView = "Pelaksana";
+            break;
+        case "udpb":
+            ViewBag.catView = "User DPB";
+            break;
+        default:
+            break;
+    }
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Hasil Pencarian @ViewBag.catView</h3>
+            </div>
+            <div class="box-body">
+                <table id="" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>User</th>
+                            <th>Jml.Item</th>
+                            <th>PLK</th>
+                            <th>Divisi</th>
+                            <th>JobCode</th>
+                            <th>JobCode(T)</th>
+                            <th>DPB</th>
+                            <th>SPPH</th>
+                            <th>PO</th>
+                            <th>Supplier(T)</th>
+                            <th>Barang Tiba</th>
+                            <th>BAPB</th>
+                            <th>SPP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            string backGround = null;
+                            foreach (var item in Model)
+                            {
+                                i++;
+                                int newPo = 0;
+                                if (item.po != null)
+                                {
+                                    newPo = Int32.Parse(item.po);
+                                }
+                                if ((item.status != null && item.status == "C") || (item.status_po != null && item.status_po == "C"))
+                                {
+                                    backGround = " style=background:#a94442;";
+                                }
+                                else
+                                {
+                                    backGround = "";
+                                }
+
+                                <tr @backGround>
+                                    <td>@i</td>
+                                    <td>@if (item.user_dpb != null)
+                                    { @item.user_dpb;
+                                    }
+                                    else
+                                    { <i class="text-danger">@Html.Raw(empty)</i> }</td>
+                                    <td>@item.jml_item</td>
+                                    <td title="@item.plk">
+                                        @{cutThis = item.plk != null ? item.plk : "kosong";
+                                            cutString = !String.IsNullOrWhiteSpace(cutThis) && cutThis.Length > maxCharDetail
+                                                            ? cutThis.Substring(0, maxCharDetail) + "..."
+                                                            : cutThis;
+                                        }
+                                        @if (ViewBag.addPlk)
+                                        {
+                                            <a href="~/Dashboard/Executor?dpb=@item.dpb">
+                                                @if (item.plk != null)
+                                                {
+                                                    @cutString
+                                                }
+                                                else
+                                                { <center><i class="text-primary text-center"><span class="fa fa-plus"></span></i></center> }
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            if (item.plk != null)
+                                            {
+                                                @cutString
+                                            }
+                                            else
+                                            { <i class="text-danger text-center">@Html.Raw(empty)</i> }
+                                        }
+                                    </td>
+
+                                    <td title="@item.divisi">
+                                        @if (item.divisi != null)
+                                    {
+                                        cutThis = item.divisi;
+                                        cutString = !String.IsNullOrWhiteSpace(cutThis) && cutThis.Length > maxCharDetail
+                                                        ? cutThis.Substring(0, maxCharDetail) + "..."
+                                                        : cutThis;
+                                        @cutString
+                                    }
+                                    else
+                                    { <i class="text-danger text-center">@Html.Raw(empty)</i> }
+                                </td>
+
+                                <td>@if (item.job_code != null)
+                                { @item.job_code;
+                                }
+                                else
+                                { <i class="text-danger text-center">@Html.Raw(empty)</i> }</td>
+                                <td title="@item.job_code_t">
+                                    @if (item.job_code_t != null)
+                                {
+                                    cutThis = item.job_code_t;
+                                    cutString = !String.IsNullOrWhiteSpace(cutThis) && cutThis.Length > maxCharDetail
+                                                    ? cutThis.Substring(0, maxCharDetail) + "..."
+                                                    : cutThis;
+                                    @cutString
+                                }
+                                else
+                                { <i class="text-danger text-center">@Html.Raw(empty)</i> }
+                            </td>
+                            <td>@if (item.dpb != null)
+                            { <a href="~/Dashboard/DPBBoard?dpb=@item.dpb">@item.dpb</a> }
+                            else
+                            { <i class="text-danger text-center">@Html.Raw(empty)</i> }</td>
+                            <td>@if (item.spph != null)
+                            { @item.spph;
+                            }
+                            else
+                            { <i class="text-danger text-center">@Html.Raw(empty)</i> }</td>
+                            <td>@if (item.po != null && newPo != 0)
+                            { <a href="~/Po/POBoard?po=@item.po">@item.po</a> }
+                            else
+                            { <i class="text-danger text-center">@Html.Raw(empty)</i> }</td>
+                            <td title="@item.supplier_t">
+                                @if (item.supplier_t != null)
+                            {
+                                cutThis = item.supplier_t;
+                                cutString = !String.IsNullOrWhiteSpace(cutThis) && cutThis.Length > maxCharDetail
+                                                ? cutThis.Substring(0, maxCharDetail) + "..."
+                                                : cutThis;
+                                @cutString
+                            }
+                            else
+                            { <i class="text-danger text-center">@Html.Raw(empty)</i> }
+                        </td>
+                        <td>
+                            @if (item.po != null && newPo != 0)
+                        {
+                            <a href="~/Po/DeliveredBoard?po=@item.po">
+                                @if (item.barang_tiba == ViewBag.full)
+                                {
+                                    <span class="btn btn-success full-width" title="Sudah Semua"> </span>
+                                }
+                                else if (item.barang_tiba == ViewBag.partial)
+                                {
+                                    <span class="btn btn-warning full-width" title="Baru Sebagian"> </span>
+                                }
+                                else/* if (item.barang_tiba == ViewBag.none)*/
+                                {
+                                    <span class="btn btn-danger full-width" title="Belum Semua"> </span>
+                                }
+                            </a>
+                        }
+                        else
+                        { <i class="text-danger text-center">@Html.Raw(empty)</i> }
+                    </td>
+                    <td>@if (item.bapb != null && newPo != 0)
+                    { <a href="~/Dashboard/BAPBBoard?bapb=@item.bapb">@item.bapb</a> }
+                    else
+                    { <i class="text-danger">@Html.Raw(empty)</i> }</td>
+                    <td>
+                        @if (item.po != null && newPo != 0)
+                        {
+                            if (item.is_import > 0)
+                            {
+                                <i class="text-danger">PO Impor</i>
+                            }
+                            else if (item.spp != null)
+                            {
+                                <a href="~/Po/SPPBoard?po=@item.po"> <span>Lihat SPP</span> </a>
+                            }
+                            else
+                            {
+                                if (ViewBag.addSpp)
+                                {
+                                    <center><a href="~/Po/SPPBoard?po=@item.po"> <i class="text-primary"><span class="fa fa-plus"></span></i> </a></center>
+                                }
+                                else
+                                {
+                                    <i class="text-danger text-center">@Html.Raw(empty)</i>
+                                }
+                            }
+                        }
+                        else
+                        { <i class="text-danger text-center">@Html.Raw(empty)</i> }
+                    </td>
+                </tr>
+                                                }
+                                            }
+                    </tbody>
+                </table>
+                @*<br />*@
+                @*Halaman @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) dari @Model.PageCount, total baris @ViewBag.totalRow*@
+                @if(Model != null) { 
+                <div class="pull-right">
+                    @Html.PagedListPager(Model, page => Url.Action("Search",
+                    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, keyword = options.keyword, category = options.category, from = options.from, to = options.to }))
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(window).load(function () {
+            var maxOverlay = 3;
+            for (var i = 1; i <= maxOverlay; i++) {
+                $("#overlay" + i).hide();
+            }
+        });
+        function showDetail(id) {
+            $("#overlay" + id).show();
+        }
+        function hideAjaxButton(id) {
+            $("#ajaxButton" + id).hide();
+        }
+        function beginCustomAction() {
+            beginAction();
+            $("#top-main-summary").hide();
+        }
+    </script>
+}

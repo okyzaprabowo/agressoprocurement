@@ -1,0 +1,292 @@
+﻿@model IEnumerable<LenProcurementApp.Models.PoDashboard>
+@using LenProcurementApp.Models
+@using NumberText
+@{
+    ViewBag.Title = "PO " + ViewBag.po;
+    ViewBag.SubTitle = ViewBag.po;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (Model == null)
+    {
+        return;
+    }
+    int maxCharDetail = 10;
+    string empty = "Kosong";
+    string cutThis = null;
+    string cutString = null;
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table class="table">
+                    <tbody>
+                        @Html.Partial("_PoOption2", ViewData["poOption"])
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        @Html.Partial("_PoOption", ViewData["poOption"])
+    </div>
+    <div class="col-md-6">
+        @Html.Partial("_PoPayment", ViewData["poPayment"])
+    </div>
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title text-blue">Tanggal PO (d/m/y): @ViewBag.created</h3>
+                <h3 class="box-title text-green pull-right">Tanggal Habis Kontrak (d/m/y): @ViewBag.limited</h3>
+            </div>
+            <div class="box-body">
+                <table id="lendatatable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Product</th>
+                            <th>Product (T)</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>Cur</th>
+                            <th>Unit Price</th>
+                            <th>Cur. Amount</th>
+                            <th>Total (IDR)</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Select((value, i) => new { i, value }))
+                        {
+                            <tr class="noted-tr">
+                                <td>@(item.i + 1)</td>
+                                <td class="noted-code">@item.value.product</td>
+                                @{cutThis = item.value.product_t != null ? item.value.product_t : empty;
+                                    cutString = !String.IsNullOrWhiteSpace(cutThis) && cutThis.Length > maxCharDetail
+                                                    ? cutThis.Substring(0, maxCharDetail) + "..."
+                                                    : cutThis;
+                                }
+                                <td title="@cutThis">@cutString</td>
+                                <td class="text-right autoNum">@item.value.qty</td>
+                                <td>@item.value.unit</td>
+                                <td>@item.value.cur</td>
+                                @{
+                                    double d1 = Math.Round(item.value.unit_price, 2);
+                                    double d2 = Math.Round(item.value.cur_amount, 2);
+                                    double d3 = Math.Round(item.value.total_idr, 2);
+                                    string sd1 = d1.ConvertToDot();
+                                    string sd2 = d2.ConvertToDot();
+                                    string sd3 = d3.ConvertToDot();
+                                }
+                                <td class="text-right autoNum">@sd1</td>
+                                <td class="text-right autoNum">@sd2</td>
+                                <td class="text-right autoNum">@sd3</td>
+                                <td class="note-td">
+                                    @if (item.value.note != null && item.value.note != "")
+                                    {
+                                        {cutThis = item.value.note != null || item.value.note == "" ? item.value.note : empty;
+                                            cutString = !String.IsNullOrWhiteSpace(cutThis) && cutThis.Length > maxCharDetail
+                                                            ? cutThis.Substring(0, maxCharDetail) + "..."
+                                                            : cutThis;
+                                        }
+                                        <span class="noted hide">@item.value.note</span>
+                                        <span class="noted-show">@cutString</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="noted-show"><i class="fa fa-ban text-danger" style="margin-left:25px;"></i></span>
+                                    }
+
+                                    <span class="btn btn-primary btn-xs pull-right">
+                                        @if (ViewBag.editPoBoard)
+                                        {
+                                            <i class="fa fa-edit"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-eye"></i>
+                                        }
+                                    </span>
+</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                @if (Session["pageNumber"] != null)
+                {
+                    <a href="~/Dashboard/Index?page=@Session["pageNumber"]" class="btn btn-default">Kembali ke Dashboard</a>
+                }
+                else
+                {
+                    <a href="~/Dashboard/Index" class="btn btn-default">Kembali ke Dashboard</a>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="noteModalLabel">Keterangan</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="control-label">Keterangan:</label>
+                        @if (ViewBag.editPoBoard)
+                        {
+                            <textarea class="form-control" id="noted-text"></textarea>
+                        }
+                        else
+                        {
+                            <textarea class="form-control" id="noted-text" readonly></textarea>
+                        }
+                    </div>
+                </form>
+            </div>
+            @if (ViewBag.editPoBoard)
+            {
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNoted()">Simpan</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var _changeMe, _changeMeShow;
+        $(document).ready(function () {
+            var inputImport = $("#input-po-import");
+            checkImportAction(inputImport.attr("name"), inputImport.is(":checked"));
+            var jaminanUm = $("#jaminan_um");
+            checkDate(jaminanUm.attr("name"), jaminanUm.is(":checked"), true);
+            var jaminanPelaksanaan = $("#jaminan_pelaksanaan");
+            checkDate(jaminanPelaksanaan.attr("name"), jaminanPelaksanaan.is(":checked"), true);
+            var jaminanPemeliharaan = $("#jaminan_pemeliharaan");
+            checkDate(jaminanPemeliharaan.attr("name"), jaminanPemeliharaan.is(":checked"), true);
+        });
+        $("input").on('ifChanged', function (e) {
+            var _this = $(this);
+            var url = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Po/SubmitOption";
+            var objectData = { po: @ViewBag.po, name: _this.attr("name"), state: _this.is(":checked") };
+            checkImportAction(objectData.name, objectData.state);
+            checkDate(objectData.name, objectData.state);
+            //console.log(objectData);
+            loader(true);
+            $.post(url, objectData, function (data) {
+                //console.log(data);
+                loader(false);
+            });
+        });
+
+        $(".note-td").on("click", function(){
+            var _this = $(this);
+            _changeMe = _this.children(".noted");
+            _changeMeShow = _this.children(".noted-show");
+            var notedCode = _this.parent(".noted-tr").children(".noted-code").text();
+            var noted = _changeMe.text();
+            var modal = $("#noteModal");
+            var notedText = $("#noted-text");
+            var notedTitle = $("#noteModalLabel");
+            modal.modal("show");
+            noted != "Kosong" ? notedText.val(noted) : notedText.val("");
+            notedTitle.text(notedCode);
+        });
+
+        function saveDate(state){
+            var url = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Po/SubmitDateOption";
+            var name,value;
+            if(state == 1){
+                name = "tgl_um";
+                value = $("#val-um").val();
+            } else if(state == 2){
+                name = "tgl_pelaksanaan";
+                value = $("#val-pelaksanaan").val();
+            } else if(state == 3){
+                name = "tgl_pemeliharaan";
+                value = $("#val-pemeliharaan").val();
+            }
+            console.log(value);
+            if(!value){
+                return;
+            }
+            var objectData = { po: @ViewBag.po, name: name, value: value };
+            console.log(objectData);
+            loader(true);
+            $.post(url, objectData, function (data) {
+                loader(false);
+            });
+        }
+
+        function checkDate(name, state, showing){
+            if(name == "jaminan_um"){
+                if(state){
+                    $("#tgl_um").removeClass("hide");
+                    //if(!showing){$("#tgl_um").val("")};
+                } else {
+                    $("#tgl_um").addClass("hide");
+                }
+            } else if(name == "jaminan_pelaksanaan"){
+                if(state){
+                    $("#tgl_pelaksanaan").removeClass("hide");
+                    //if(!showing){$("#tgl_pelaksanaan").val("")};
+                } else {
+                    $("#tgl_pelaksanaan").addClass("hide");
+                }
+            } else if(name == "jaminan_pemeliharaan"){
+                if(state){
+                    $("#tgl_pemeliharaan").removeClass("hide");
+                    //if(!showing){$("#tgl_pelaksanaan").val("")};
+                } else {
+                    $("#tgl_pemeliharaan").addClass("hide");
+                }
+            }
+        }
+
+        function saveNoted(){
+            loader(true);
+            var url = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Dashboard/SubmitNote";
+            var notedCode = $("#noteModalLabel").text();
+            var notedText = $("#noted-text").val();
+            var objectData = { code: notedCode, note: notedText, po: @ViewBag.po};
+            var modal = $("#noteModal");
+            modal.modal("hide");
+            _changeMe.text(objectData.note);
+            console.log(objectData.note);
+            var newText = !objectData.note || objectData.note == "" ? "Kosong" : objectData.note.length >= 10 ? objectData.note.substr(0, 10)+"..." : objectData.note;
+            console.log(newText);
+            _changeMeShow.text(newText);
+            $.post(url, objectData, function (data) {
+                loader(false);
+            });
+        }
+
+        function checkImportAction(name, state){
+            var poImport = $("#option-po-import");
+            if(name == "po_import"){
+                if(state){
+                    poImport.removeClass('hide');
+                } else {
+                    poImport.addClass('hide');
+                }
+            }
+        }
+
+        function successActionImport(){
+            var inputImport = $("#input-po-import");
+            successAction();
+            inputImport.iCheck("uncheck");
+        }
+    </script>
+}

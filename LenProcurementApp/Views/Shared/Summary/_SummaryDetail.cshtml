@@ -1,0 +1,49 @@
+﻿@model IEnumerable<LenProcurementApp.Models.SummaryModel>
+<div class="col-md-12">
+    <div class="box box-primary">
+        <div class="box-header">
+            <strong>Summary Tahun @DateTime.Now.Year</strong>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                @{
+                    int i = 0;
+                    string color = "bg-yellow";
+                }
+                @foreach (var item in Model)
+                {
+                    i++;
+                    int d = i % 4;
+                    if (d == 0)
+                    {
+                        color = "bg-maroon";
+                    }
+                    else if(d == 1)
+                    {
+                        color = "bg-yellow";
+                    }
+                    else if (d == 2)
+                    {
+                        color = "bg-green";
+                    }
+                    else
+                    {
+                        color = "bg-primary";
+                    }
+                    <div class="col-lg-3 col-xs-6">
+                        <!-- small box -->
+                        <div class="summary-height small-box @color">
+                            <div class="inner">
+                                <h3>@item.data1 @if (item.data2 != "") { <span> / @item.data2</span>} @if (item.percentage){ <span>%</span> }</h3>
+                                <p>@if (item.link1 != "") {<a href="@item.link1" class="text-bold text-white">@item.name1</a>} else { @item.name1 } @if (item.name2 != "") { if (item.link2 != "") { <span> / </span> <a href="@item.link2" class="text-bold text-white">@item.name2</a> } else { if (item.name2 != "") { <span> / @item.name2</span> } } }</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                        </div>
+                    </div><!-- ./col -->
+                }
+            </div>
+        </div>
+    </div>
+</div>

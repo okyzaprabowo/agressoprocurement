@@ -1,0 +1,196 @@
+﻿@using LenProcurementApp.Models
+@model IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+@{
+    ViewBag.Title = Naming.Roles;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+@*@Html.ActionLink("Create New Role", "CreateRole") | @Html.ActionLink("Manage User Role", "ManageUserRoles")*@
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-primary" style="position: relative; left: 0px; top: 0px;">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Naming.RoleNew</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                @using (Html.BeginForm("CreateRole", "SuperAdmin", new { role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    <div class="input-group">
+                        <input class="form-control" name="RoleName" placeholder="@Naming.RoleEnterName">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Tambahkan</button>
+                        </div>
+                    </div>
+                }
+            </div><!-- /.box-body -->
+            <div class="box-footer clearfix no-border">
+                <i class="text-info">Masukan nama Role kemudian tekan tombol Tambahkan.</i> <br />
+            </div>
+        </div>
+        <div class="box box-primary" style="position: relative; left: 0px; top: 0px;">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Naming.RoleUpdate</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <ul class="todo-list ui-sortable">
+                    @{
+                        int no = 0;
+                     }
+                    @foreach (var role in Model)
+                    {
+                        no++;
+                        <li class="">
+                            <span class="text">@no. &nbsp; @role.Name</span>
+                            <div class="tools">
+                                <a href="~/SuperAdmin/EditRole?RoleName=@role.Name" class="text-warning"><i class="fa fa-edit"></i> Edit</a> &nbsp; &nbsp; &nbsp;
+                                <a onclick="return confirm('Anda yakin akan menghapus data ini?')" href="~/SuperAdmin/DeleteRole?RoleName=@role.Name" class="text-danger"><i class="fa fa-trash-o"></i> Hapus</a>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div><!-- /.box-body -->
+            <div class="box-footer clearfix no-border">
+                <i class="text-info">Sorot nama Role untuk merubah atau menghapusnya.</i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="box box-primary" style="position: relative; left: 0px; top: 0px;">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Naming.RoleSearch <i class="fa fa-arrows-h"></i> Pengguna</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        @using (Html.BeginForm("GetRoles", "SuperAdmin"))
+                    {
+                            @Html.AntiForgeryToken()
+                            <div class="input-group">
+                                @Html.DropDownList("UserName", (IEnumerable <SelectListItem>) ViewBag.Users, "Pilih Pengguna", new { @class = "form-control" })
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> &nbsp; Cari</button>
+                                </div>
+                            </div>
+                    }
+
+                        @if (ViewBag.RolesForThisUser != null)
+                    {
+                            <br />
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>@Naming.Roles</th>
+                                    </tr>
+                                    @{ int i=0;}
+                                    @foreach (string s in ViewBag.RolesForThisUser)
+                                {
+                                    i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@s</td>
+                                        </tr>
+                                }
+                                </tbody>
+                            </table>
+                    }
+                    </div>
+                    <div class="col-md-6">
+                        @using (Html.BeginForm("GetUserFromRole", "SuperAdmin"))
+                    {
+                            @Html.AntiForgeryToken()
+                            <div class="input-group">
+                                @Html.DropDownList("RoleName", (IEnumerable <SelectListItem>) ViewBag.Roles, Naming.RoleChoose, new { @class = "form-control" })
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> &nbsp; Cari</button>
+                                </div>
+                            </div>
+                    }
+
+                        @if (ViewBag.UserForThisRole != null)
+                    {
+                            <br />
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>Pengguna</th>
+                                    </tr>
+                                    @{ int i=0;}
+                                    @foreach (var s in ViewBag.UserForThisRole)
+                                {
+                                    i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@s.UserName</td>
+                                        </tr>
+                                }
+                                </tbody>
+                            </table>
+                    }
+                    </div>
+                </div>
+                
+            </div><!-- /.box-body -->
+            <div class="box-footer clearfix no-border">
+                <i class="text-info">Pilih Pengguna dan Role, kemudian tekan Cari</i> @*<br />
+                <i class="text-info">Setelah disimpan, Nama Jabatan akan muncul disebelah kiri.</i>*@
+            </div>
+        </div>
+        <div class="box box-primary" style="position: relative; left: 0px; top: 0px;">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Naming.RoleChoose untuk Pengguna</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                @using (Html.BeginForm("RoleAddToUser", "SuperAdmin"))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Username</label> @Html.DropDownList("UserName", (IEnumerable <SelectListItem>) ViewBag.Users, "Pilih Pengguna", new { @class = "form-control" }) <br />
+                        </div>
+                        <div class="col-md-6">
+                            <label>@Naming.Roles</label> @Html.DropDownList("RoleName", (IEnumerable <SelectListItem>) ViewBag.Roles, Naming.RoleChoose, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> &nbsp; Simpan</button>
+                }
+            </div><!-- /.box-body -->
+            <div class="box-footer clearfix no-border">
+                <i class="text-info">Pilih Pengguna dan Role, kemudian tekan Simpan</i> @*<br />
+                <i class="text-info">Setelah disimpan, Nama Jabatan akan muncul disebelah kiri.</i>*@
+            </div>
+        </div>
+        <div class="box box-primary" style="position: relative; left: 0px; top: 0px;">
+            <div class="box-header with-border">
+                <h3 class="box-title">@Naming.RoleDelete untuk Pengguna</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                @using (Html.BeginForm("DeleteRoleForUser", "SuperAdmin"))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Username</label> @Html.DropDownList("UserName", (IEnumerable <SelectListItem>) ViewBag.Users, "Pilih Pengguna", new { @class = "form-control" }) <br />
+                        </div>
+                        <div class="col-md-6">
+                            <label>@Naming.Roles</label> @Html.DropDownList("RoleName", (IEnumerable <SelectListItem>) ViewBag.Roles, Naming.RoleChoose, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-eraser"></i> &nbsp; Hapus</button>
+                }
+            </div><!-- /.box-body -->
+            <div class="box-footer clearfix no-border">
+                <i class="text-info">Pilih Pengguna dan Role, kemudian tekan Hapus</i> @*<br />
+                <i class="text-info">Setelah disimpan, Nama Jabatan akan muncul disebelah kiri.</i>*@
+            </div>
+        </div>
+    </div>
+</div>

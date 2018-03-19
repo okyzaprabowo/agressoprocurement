@@ -1,0 +1,118 @@
+﻿@model IEnumerable<LenProcurementApp.Models.BapbDasboard>
+@{
+    ViewBag.Title = "BAPB "+ ViewBag.bapb;
+    //ViewBag.SubTitle = ViewBag.bapb;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (Model == null)
+    {
+        return;
+    }
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>DPB</td>
+                            <td>: @ViewBag.dpb</td>
+                        </tr>
+                        <tr>
+                            <td>PO</td>
+                            <td>: @ViewBag.po</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="box box-primary">
+            <div class="box-body">
+                <p><i>Keterangan:</i></p>
+                @if (ViewBag.addNote)
+                {
+                using (Ajax.BeginForm("SubmitNote", "Dashboard", new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    OnBegin = "beginAction",
+                    OnSuccess = "successAction",
+                    OnFailure = "failurAction",
+                    OnComplete = "completeAction",
+                    UpdateTargetId = "target-note",
+                    InsertionMode = InsertionMode.Replace
+                }))
+                {
+                    @Html.AntiForgeryToken()
+                    <textarea name="note" class="full-width" placeholder="Tambahkan keterangan disini...">@ViewBag.note</textarea>
+                    <input type="hidden" name="code" value="@ViewBag.bapb" />
+                    <button type="submit" class="btn btn-primary pull-left">Simpan keterangan</button>
+                    <div id="result-action" class="pull-left"></div>
+                }
+                }
+                else
+                {
+                    if (ViewBag.note != null)
+                    {
+                        <p>@ViewBag.note</p>
+                    }
+                    else
+                    {
+                        <p>Tidak ada keterangan</p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title text-blue">Dibuat pada tanggal (d/m/y): @ViewBag.created</h3>
+                @*<h3 class="box-title text-green pull-right">Sampai pada tanggal 31/01/2016</h3>*@
+            </div>
+            <div class="box-body">
+                <table id="lendatatable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>@Html.DisplayNameFor(m => m.product)</th>
+                            <th>@Html.DisplayNameFor(m => m.product_t)</th>
+                            <th>@Html.DisplayNameFor(m => m.qty)</th>
+                            <th>@Html.DisplayNameFor(m => m.unit)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Select((value, i) => new { i, value }))
+                        {
+                            <tr>
+                                <td>@(item.i + 1)</td>
+                                <td>@item.value.product</td>
+                                @{  string str = item.value.product_t;
+                                    string strKat = !String.IsNullOrWhiteSpace(str) && str.Length >= 50
+                                        ? str.Substring(0, 50)+"..."
+                                        : str;}
+                                <td>@strKat</td>
+                                <td class="text-right autoNum">@item.value.qty</td>
+                                <td>@item.value.unit</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                @if (Session["pageNumber"] != null)
+                {
+                    <a href="~/Dashboard/Index?page=@Session["pageNumber"]" class="btn btn-default">Kembali ke Dashboard</a>
+                }
+                else
+                {
+                    <a href="~/Dashboard/Index" class="btn btn-default">Kembali ke Dashboard</a>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</div>

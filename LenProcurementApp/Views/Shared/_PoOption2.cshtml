@@ -1,0 +1,120 @@
+﻿@model LenProcurementApp.Models.PoOption
+
+<tr>
+    <td>DPB: @ViewBag.dpb</td>
+    <td>
+        <label>
+            @if (ViewBag.editPoBoard)
+            {
+                @Html.CheckBoxFor(m => m.is_done, new { @class = "minimal-red" })
+            }
+            else
+            {
+                @Html.CheckBoxFor(m => m.is_done, new { @class = "minimal-red", @disabled = "true" })
+            }
+            @Html.DisplayNameFor(m => m.is_done)
+        </label>
+    </td>
+</tr>
+
+<tr>
+    <td colspan="2">
+        <label>
+            @if (ViewBag.editPoBoard)
+            {
+                @Html.CheckBoxFor(m => m.jaminan_um, new { @class = "minimal-red" })
+            }
+            else
+            {
+                @Html.CheckBoxFor(m => m.jaminan_um, new { @class = "minimal-red", @disabled = "true" })
+            }
+            @Html.DisplayNameFor(m => m.jaminan_um)
+        </label>
+        <div class="row"  id="tgl_um">
+            <div class="col-md-9">
+
+                @if (ViewBag.editPoBoard) {
+                    <input type="text" class="form-control datepicker" id="val-um" name="@Html.NameFor(m=>m.tgl_um)" value="@ViewBag.umDate" />
+                }
+                else
+                {
+                    <input type="text" class="form-control" id="val-um" name="@Html.NameFor(m=>m.tgl_um)" value="@ViewBag.umDate" readonly />
+                }
+                <p class="text-danger"><i>Tanggal berakhir jaminan.</i></p>
+            </div>
+            @if (ViewBag.editPoBoard)
+            {
+                <div class="col-md-3">
+                    <button class="btn btn-primary" onclick="saveDate(1)"><i class="fa fa-save"></i></button>
+                </div>
+            }
+        </div>
+    </td>
+</tr>
+<tr>
+    <td colspan="2">
+        <label>
+            @if (ViewBag.editPoBoard)
+            {
+                @Html.CheckBoxFor(m => m.jaminan_pelaksanaan, new { @class = "minimal-red" })
+            }
+            else
+            {
+                @Html.CheckBoxFor(m => m.jaminan_pelaksanaan, new { @class = "minimal-red", @disabled = "true" })
+            }
+            @Html.DisplayNameFor(m => m.jaminan_pelaksanaan)
+        </label>
+        <div class="row" id="tgl_pelaksanaan">
+            <div class="col-md-9">
+                @if (ViewBag.editPoBoard)
+                {
+                    <input type="text" class="form-control datepicker" id="val-pelaksanaan" name="@Html.NameFor(m => m.tgl_pelaksanaan)" value="@ViewBag.pelDate"/>
+                }
+                else
+                {
+                    <input type="text" class="form-control" id="val-pelaksanaan" name="@Html.NameFor(m => m.tgl_pelaksanaan)" value="@ViewBag.pelDate" readonly/>
+                }
+                <p class="text-danger"><i>Tanggal berakhir jaminan.</i></p>
+            </div>
+            @if (ViewBag.editPoBoard) {
+            <div class="col-md-3">
+                <button class="btn btn-primary" onclick="saveDate(2)"><i class="fa fa-save"></i></button>
+            </div> 
+            }
+        </div>
+    </td>
+</tr>
+<tr>
+    <td colspan="2">
+        <label>
+            @if (ViewBag.editPoBoard)
+            {
+                @Html.CheckBoxFor(m => m.jaminan_pemeliharaan, new { @class = "minimal-red" })
+            }
+            else
+            {
+                @Html.CheckBoxFor(m => m.jaminan_pemeliharaan, new { @class = "minimal-red", @disabled = "true" })
+            }
+            @Html.DisplayNameFor(m => m.jaminan_pemeliharaan)
+        </label>
+        <div class="row" id="tgl_pemeliharaan">
+            <div class="col-md-9">
+                @if (ViewBag.editPoBoard)
+                {
+                    <input type="text" class="form-control datepicker" id="val-pemeliharaan" name="@Html.NameFor(m => m.tgl_pemeliharaan)" value="@ViewBag.pemDate" />
+                }
+                else
+                {
+                    <input type="text" class="form-control" id="val-pemeliharaan" name="@Html.NameFor(m => m.tgl_pemeliharaan)" value="@ViewBag.pemDate" readonly />
+                }
+                <p class="text-danger"><i>Tanggal berakhir jaminan.</i></p>
+            </div>
+            @if (ViewBag.editPoBoard)
+            {
+                <div class="col-md-3">
+                    <button class="btn btn-primary" onclick="saveDate(3)"><i class="fa fa-save"></i></button>
+                </div>
+            }
+        </div>
+    </td>
+</tr>

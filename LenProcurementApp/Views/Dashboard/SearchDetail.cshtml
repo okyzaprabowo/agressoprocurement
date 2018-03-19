@@ -1,0 +1,50 @@
+﻿@model IEnumerable<LenProcurementApp.Models.SearchDetail>
+@{
+    ViewBag.Title = "Hasil Ringkasan";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    string type = ViewBag.typeString;
+}
+<div class="row">
+    <div class="col-md-5">
+        <div class="box box-primary">
+            <div class="box-header">
+                <strong>@type</strong>
+            </div>
+            <div class="box-body">
+                <table id="lendatatable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th width="30">No</th>
+                            <th width="100">Kode @type</th>
+                            <th>Informasi Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count() > 0)
+                        {
+                            foreach (var item in Model.Select((value, i) => new { i, value }))
+                            {
+                                if (ViewBag.type == 1)
+                                {
+                                    <tr>
+                                        <td class="text-center">@(item.i + 1)</td>
+                                        <td><a href="~/Dashboard/DPBBoard?dpb=@item.value.result">@item.value.result</a></td>
+                                        <td><a href="~/Dashboard/Search?keyword=@item.value.result&category=dpb&from=&to=">Detail hasil pencarian</a></td>
+                                    </tr>
+                                }
+                                else if (ViewBag.type == 2)
+                                {
+                                    <tr>
+                                        <td class="text-center">@(item.i + 1)</td>
+                                        <td><a href="~/Po/POBoard?po=@item.value.result">@item.value.result</a></td>
+                                        <td><a href="~/Dashboard/Search?keyword=@item.value.result&category=po&from=&to=">Detail hasil pencarian</a></td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

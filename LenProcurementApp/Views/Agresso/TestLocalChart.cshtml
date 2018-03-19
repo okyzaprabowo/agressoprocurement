@@ -1,0 +1,10 @@
+﻿@model LenProcurementApp.Models.LenChart
+@{
+    ViewBag.Title = "TestLocalChart";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<div class="box box-danger">
+    <div class="box-body">
+        @Model.Chart.Write()
+    </div>
+</div>

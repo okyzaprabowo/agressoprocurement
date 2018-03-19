@@ -1,0 +1,230 @@
+﻿@model LenProcurementApp.Models.PoImport
+@using LenProcurementApp.Models
+@{
+    ViewBag.Title = "PO "+ ViewBag.po;
+    ViewBag.SubTitle = ViewBag.po;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (Model == null)
+    {
+        return;
+    }
+}
+<div id="result-action"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">PO Impor</h3>
+            </div><!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post">
+                <div class="box-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @if(Model.po_import_id > 0) {
+                        @Html.HiddenFor(m=>m.po_import_id)
+                    }
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.po, new { @class= "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m=>m.po, new { @class= "form-control", @readonly="true" })
+                            @Html.ValidationMessageFor(m=>m.po)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.tanggal, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control datepicker" name="@Html.NameFor(m=>m.tanggal)" value="@Model.tanggal.ToShortDateString()" />
+                            @Html.ValidationMessageFor(m => m.tanggal)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ke, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.ke, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m=>m.ke)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.alamat, new { @class= "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(m=>m.alamat, new { @class= "form-control" })
+                            @Html.ValidationMessageFor(m=>m.alamat)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.no_telp, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.no_telp, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m=>m.no_telp)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.no_fax, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.no_fax, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.no_fax)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.attn, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.attn, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m=>m.attn)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ref_po, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.ref_po, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m=>m.ref_po)
+                        </div>
+                    </div>
+                    @*<hr />*@
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <table class="table" style="border-bottom:2px solid #f4f4f4; margin-bottom:7px;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th width="600">Description Of Goods</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price (@ViewBag.cur)</th>
+                                    <th>Total Price (@ViewBag.cur)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoice-data">
+                                @{
+                                    List<PrintPoProduct> list = ViewBag.listProducts;
+                                    if (list.Count() > 0)
+                                    {
+                                        int i = 0;
+                                        foreach (PrintPoProduct item in list)
+                                        {
+                                            i++;
+                                            decimal d1 = Math.Round((decimal)item.unit_price, 2);
+                                            decimal d2 = Math.Round((decimal)item.cur_amount, 2);
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.product_t</td>
+                                                <td class="text-right autoNum">@item.qty</td>
+                                                <td class="text-right autoNum">@d1</td>
+                                                <td class="text-right autoNum">@d2</td>
+                                            </tr>
+                                                        }
+                                                }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.condition, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.condition, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m=>m.condition)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.term_of_payment, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.term_of_payment, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m=>m.term_of_payment)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.pay_to_bank, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(m => m.pay_to_bank, new { @class = "form-control", @rows = 6 })
+                            @Html.ValidationMessageFor(m=>m.pay_to_bank)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.shipment, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(m => m.shipment, new { @class = "form-control", @rows = 3 })
+                            @Html.ValidationMessageFor(m=>m.shipment)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.delivery_time, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.delivery_time, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.delivery_time)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.delivery_to, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(m => m.delivery_to, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m=>m.delivery_to)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.attn_on_delivery, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.attn_on_delivery, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m=>m.attn_on_delivery)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.manager, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(m => m.manager, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.manager)
+                        </div>
+                    </div>
+                    <input type="hidden" name="state" id="state" value="0" />
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <a href="~/Po/POBoard?po=@ViewBag.po" id="back-link" class="btn btn-default">Kembali</a>
+                    @if (ViewBag.addPoImport)
+                    {
+                        <button type="submit" class="btn btn-primary pull-right" onmouseover="changeState(0)"> Simpan </button>
+                        <button type="submit" class="btn btn-success pull-right margin-right" onmouseover="changeState(1)"> Print </button>
+                    }
+                    
+                    @if(System.Configuration.ConfigurationManager.AppSettings["UsePDFButton"] == "true")
+                    {
+                        <button class="btn btn-info pull-right margin-right" onmouseover="changeState(2)"> Download PDF </button> 
+                    }
+
+                </div><!-- /.box-footer -->
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            @{
+                int isResult = ViewBag.saved;
+                string result = null;
+                if (isResult == 1)
+                {
+                    result = "importAction();";
+                }
+                else if (isResult == 2)
+                {
+                    //result = "failurAction()";
+                }
+            }
+            @result
+            @if (!ViewBag.addPoImport) {
+                @Html.Raw("readonlyAction()");
+            }
+        });
+
+        function readonlyAction() {
+            $("input").prop("readonly", true);
+            $("textarea").prop("readonly", true);
+        }
+
+        function importAction() {
+            result = '<div class="alert alert-success alert-dismissable" id="success-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="success-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Berhasil disimpan. </div>';
+            $("#result-action").html(result);
+        }
+
+        function changeState(s) {
+            var state = $("#state");
+            state.val(s);
+        }
+    </script>
+}

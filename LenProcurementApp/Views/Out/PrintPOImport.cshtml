@@ -1,0 +1,213 @@
+﻿@model LenProcurementApp.Models.PrintPOImport
+@using System.Globalization;
+@using LenProcurementApp.Models;
+@using System.Threading;
+@{
+    ViewBag.Title = "Print PO Import";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    if (Model == null)
+    {
+        return;
+    }
+
+    CultureInfo en = new CultureInfo("en-US");
+    Thread.CurrentThread.CurrentCulture = en;
+}
+
+<style>
+    @@media print {
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        /*table {
+            border: 1px solid white;
+        }*/
+        #break-page{display:none;}
+    }
+
+    /*table {
+        border: 1px solid white;
+    }*/
+
+        table td {
+            vertical-align: top;
+        }
+
+    ol {
+        padding-left: 15px;
+    }
+
+    p {
+        margin: 0;
+    }
+    .new-border{ border:1px solid #000000; padding:3px;}
+</style>
+
+<table border="1" id="table-with-break">
+    <thead>
+        <tr><td width="3%"></td><td width="7%"></td><td width="10%"></td><td width="2%"></td><td width="13%"></td><td width="15%"></td><td width="13%"></td><td width="12%"></td><td width="12%"></td><td width="18%"></td></tr>
+        <tr><td colspan="10">&emsp;</td></tr>
+        <tr><td colspan="10" class="text-right"><span style="border: 1px solid black;padding: 5px;font-size:15px;">PFR-001</span></td></tr>
+        <tr>
+            <td rowspan="5" colspan="2">
+                <img alt="Len" src="~/Content/Images/logo.png" class="pull-left" height="80" />
+            </td>
+            <td colspan="6" style="font-size:15px;"><b>PT Len Industri (Persero)</b></td>
+        </tr>
+        <tr><td colspan="6" style="font-size:12px;">Jl. Soekarno Hatta No. 442</td></tr>
+        <tr><td colspan="6" style="font-size:12px;">Bandung 40254 Indonesia</td></tr>
+        <tr><td colspan="6" style="font-size:12px;">Telp. +6222 5202682</td></tr>
+        <tr><td colspan="6" style="font-size:12px;">NPWP 01.063.305.5.051.000</td></tr>
+        <tr><td colspan="10" style="font-size:12px;"><hr /></td></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3">Purchase Order No.</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.po</td>
+        </tr>
+        <tr>
+            <td colspan="3">Date</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.tanggal.ToLongDateString().Replace(@Model.tanggal.DayOfWeek.ToString(), "").Trim(',', ' ')</td>
+        </tr>
+        <tr>
+            <td colspan="3">To</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.ke</td>
+        </tr>
+        <tr>
+            <td colspan="3">Address</td>
+            <td align="center">:</td>
+            <td colspan="6">@Html.Raw(Html.Encode(Model.alamat).Replace("\n", "<br />"))</td>
+        </tr>
+        <tr>
+            <td colspan="3">Phone No.</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.no_telp</td>
+        </tr>
+        <tr>
+            <td colspan="3">Fax No.</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.no_fax</td>
+        </tr>
+        <tr>
+            <td colspan="3">Attn</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.attn</td>
+        </tr>
+        <tr>
+            <td colspan="3">Ref.</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.ref_po</td>
+        </tr>
+        <tr><td><br /></td></tr>
+        <tr><td colspan="10">We are pleased to submit our order as follows :</td></tr>
+        <tr><td><br /></td></tr>
+        <tr class="new-border">
+            <td class="new-border">No</td>
+            <td class="new-border" colspan="6" align="center">Description Of Goods</td>
+            <td class="new-border" align="center">Qty</td>
+            <td class="new-border" align="center">Unit Price (@ViewBag.cur)</td>
+            <td class="new-border" align="center">Total Price (@ViewBag.cur)</td>
+        </tr>
+        @{
+            List<PrintPoProduct> list = ViewBag.listProducts;
+            if (list.Count() > 0)
+            {
+                int i = 0;
+                foreach (PrintPoProduct item in list)
+                {
+                    i++;
+                    decimal d1 = Math.Round((decimal)item.unit_price, 2);
+                    decimal d2 = Math.Round((decimal)item.cur_amount, 2);
+                    <tr class="new-border">
+                        <td class="new-border">@i</td>
+                        <td class="new-border" colspan="6">@item.product_t</td>
+                        <td class="text-right autoNum new-border"><span class="autoNum">@item.qty</span> @item.unit</td>
+                        <td class="text-right autoNum new-border">@d1</td>
+                        <td class="text-right autoNum new-border">@d2</td>
+                    </tr>
+                }
+            }
+        }
+        <tr class="new-border">
+            <td colspan="9" class="text-right text-bold" style="padding-right:10px";>Grand Total</td>
+            @{
+                decimal d3 = Math.Round((decimal) ViewBag.total, 2);
+             }
+            <td class="text-right autoNum text-bold">@d3</td>
+        </tr>
+        <tr>
+            <td colspan="3">Condition</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.condition</td>
+        </tr>
+        <tr>
+            <td colspan="3">Term of Payment</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.term_of_payment</td>
+        </tr>
+        <tr>
+            <td colspan="3">Payment To Bank</td>
+            <td align="center">:</td>
+            <td colspan="6">@Html.Raw(Html.Encode(Model.pay_to_bank).Replace("\n", "<br />"))</td>
+        </tr>
+        <tr>
+            <td colspan="3">Shipment</td>
+            <td align="center">:</td>
+            <td colspan="6">@Html.Raw(Html.Encode(Model.shipment).Replace("\n", "<br />"))</td>
+        </tr>
+        <tr>
+            <td colspan="3">Delivery time</td>
+            <td align="center">:</td>
+            <td colspan="6">@Model.delivery_time</td>
+        </tr>
+        <tr>
+            <td colspan="3">Delivery to</td>
+            <td align="center">:</td>
+            <td colspan="6">@Html.Raw(Html.Encode(Model.delivery_to).Replace("\n", "<br />"))</td>
+        </tr>
+        <tr>
+            <td colspan="3"></td>
+            <td align="center"></td>
+            <td colspan="6">Attn: @Model.attn_on_delivery</td>
+        </tr>
+        <tr id="break-page"><td colspan="10"><button onclick="breakToNextPage()" class="btn btn-primary">Tambah baris</button></td></tr>
+        <tr><td colspan="8"></td><td colspan="2">With Best Regards,</td></tr>
+        <tr><td colspan="8"></td><td>&emsp;</td></tr>
+        <tr><td colspan="8"></td><td>&emsp;</td></tr>
+        <tr><td colspan="8"></td><td>&emsp;</td></tr>
+        <tr><td colspan="8"></td><td colspan="2"><u>@Model.manager</u></td></tr>
+        <tr><td colspan="8"></td><td colspan="2">Purchaser</td></tr>
+        <tr><td><br /></td></tr>
+        <tr><td colspan="10"><i>Note : Please send us the proforma invoice to indicate that you've accepted our P.O</i></td></tr>
+        <tr><td colspan="10"><i>&emsp; &emsp;The goods / services should be supplied as requested.</i></td></tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ctlTd = $('.dontSplit td');
+            if (ctlTd.length > 0)
+            {
+                //console.log('Found ctlTd');
+                ctlTd.wrapInner('<div class="avoidBreak" />');
+            }
+        });
+
+        function breakToNextPage() {
+            var theTable = $('#table-with-break  >tbody >tr').length;
+            console.log(theTable);
+            var breakThis = $("#table-with-break > tbody:last tr:eq("+(theTable-10)+")");
+            var changeThis = '<tr><td colspan="10"></td><td>&emsp;</td></tr>';
+            breakThis.after(changeThis);
+        }
+    </script>
+}

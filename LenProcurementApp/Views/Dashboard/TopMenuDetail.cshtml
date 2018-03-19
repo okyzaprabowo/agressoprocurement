@@ -1,0 +1,195 @@
+﻿@using System
+@{
+    ViewBag.Title = "SUMMARY " + ViewBag.name;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    var ser = new System.Web.Script.Serialization.JavaScriptSerializer();
+    if (ViewBag.id == null)
+    {
+        return;
+    }
+}
+<div class="row">
+    @if (ViewBag.isGrafik)
+    {
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <strong>Jumlah item berdasarkan Schedule Kedatangan Barang</strong>
+                </div>
+                <div class="box-body">
+                    <div id="container" style="width: 100%;">
+                        <canvas id="canvas1" height="80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <strong>Schedule Kedatangan Barang yang sudah lewat tanggal kontrak</strong>
+                </div>
+                <div class="box-body">
+                    <div id="container" style="width: 100%;">
+                        <canvas id="canvas2" height="80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @Html.Partial("Summary/_SummaryDetail")
+</div>
+
+@if (ViewBag.isGrafik)
+{
+    @section Scripts
+    {
+        <script type="text/javascript">
+
+        window.onload = function() {
+            generateChart1();
+            generateChart2();
+        };
+
+        function generateChart1() {
+            var barChartData = {
+                labels: @Html.Raw(ser.Serialize(ViewBag.x1)),
+                scaleStartValue: 0,
+                datasets: [
+                    {
+                        @*label: "Total @ViewBag.id.ToUpper()",*@
+                        backgroundColor: "#00c0ef",
+                        data: @Html.Raw(ser.Serialize(ViewBag.y1))
+                    }]
+
+            };
+            var ctx = document.getElementById("canvas1").getContext("2d");
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    elements: {
+                        rectangle: {
+                            borderWidth: 1,
+                            //borderColor: 'rgb(0, 255, 0)',
+                            borderSkipped: 'bottom'
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            scaleStartValue : 0,
+                            ticks: {
+                                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                                // OR //
+                                beginAtZero: true   // minimum value will be 0.
+                            }
+
+                        }]
+                    },
+                    legend: {
+                        //position: 'top',
+                        display: false
+                    },
+                    responsive: true,
+                    animation: {
+                        duration: 0,
+                        onComplete: function () {
+                            var ctx = this.chart.ctx;
+                            ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillStyle = 'black';
+
+                            this.data.datasets.forEach(function (dataset) {
+                                
+
+                                for (var i = 0; i < dataset.data.length; i++) {
+                                    var model = dataset._meta['0'].data[i]._model; //.dataset._children[i]._model
+                                    ctx.fillText(dataset.data[i], model.x, model.y - 5);
+                                }
+                            });               
+                        }
+                    }
+                }
+            });
+        }
+        function generateChart2(){
+            var barChartData = {
+                labels: @Html.Raw(ser.Serialize(ViewBag.x2)),
+                
+                datasets: [
+                    {
+                        @*label: "Total @ViewBag.id.ToUpper()",*@
+                        backgroundColor: "#DA2C0F",
+                        data: @Html.Raw(ser.Serialize(ViewBag.y2))
+                    }]
+
+            };
+            var ctx = document.getElementById("canvas2").getContext("2d");
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    scale: {
+                        reverse: true,
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    },
+                    elements: {
+                        rectangle: {
+                            borderWidth: 1,
+                            //borderColor: 'rgb(0, 255, 0)',
+                            borderSkipped: 'bottom'
+                        }  
+                    }, 
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            scaleStartValue : 0,
+                            ticks: {
+                                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                                // OR //
+                                beginAtZero: true   // minimum value will be 0.
+                            }
+
+                        }]
+                    },
+                    legend: {
+                        //position: 'top',
+                        display: false
+                    },
+                    responsive: true,
+                    scaleOverride : true,
+                    scaleSteps : 10,
+                    scaleStepWidth : 50,
+
+                    animation: {
+                        duration: 0,
+                        onComplete: function () {
+                            var ctx = this.chart.ctx;
+                            ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillStyle = 'black';
+
+                            this.data.datasets.forEach(function (dataset) {
+                                
+
+                                for (var i = 0; i < dataset.data.length; i++) {
+                                    var model = dataset._meta['1'].data[i]._model; //.dataset._children[i]._model
+                                    //console.log(dataset);
+                                    ctx.fillText(dataset.data[i], model.x, model.y-5);
+                                }
+                            });               
+                        }
+                    }
+                    
+                }
+                 
+
+            });
+        }
+        </script>
+    }
+}

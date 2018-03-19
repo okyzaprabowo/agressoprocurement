@@ -1,0 +1,61 @@
+﻿.len-danger{
+    /*background-color:#d33724;*/
+    color:#d33724;
+}
+.progress-group .progress-text{
+    font-weight:normal;
+}
+.no-margin {
+    margin: 0 0 0 0;
+}
+.form-control-nopadding{
+    padding: 0 2px 0 5px;
+    height: auto;
+}
+.statusDeliv{
+    text-align: center;
+    font-weight: bold;
+    padding: 7px;
+    color:#FFFFFF;
+}
+.statusDeliv.none{
+    background:#dd4b39;
+}
+.statusDeliv.partially{
+    background:#f39c12;
+}
+.statusDeliv.complete{
+    background:#00a65a;
+}
+.full-width{
+    width:100%;
+}
+.alert-new{
+    margin: 0 0 0 10px;
+    padding-top: 6px;
+    padding-bottom: 5px;
+    width: 300px;
+}
+.note-td{
+    cursor: pointer;
+}
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.field-validation-error{
+    color: red !important;
+}
+.margin-right{
+    margin-right: 10px;
+}
+.no-padding-left{
+    padding-left: 0 !important;
+}
+.badge {
+    font-size:15px;
+}
+.datepicker{ z-index: 9999 !important;}
+.text-white{color:#FFFFFF;}
+.small-text {font-size:10px;}
+.summary-height{height: 120px;}

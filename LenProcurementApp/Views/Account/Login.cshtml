@@ -1,0 +1,212 @@
+﻿@using LenProcurementApp.Models
+@model LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Masuk | @Naming.AppName</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Loader -->
+    <link rel="stylesheet" href="~/Content/Import/loader.min.css" />
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="~/Content/Import/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/Import/fonts/font-awesome.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/Import/dist/css/AdminLTE.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/Scripts/Import/iCheck/square/blue.css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        body {
+            background: #0079c3;
+            background: -moz-linear-gradient(left, #0079c3 0%, #004087 54%);
+            background: -webkit-gradient(linear, left top, right top, color-stop(0%,#0079c3), color-stop(54%,#004087));
+            background: -webkit-linear-gradient(left, #0079c3 0%,#004087 54%);
+            background: -o-linear-gradient(left, #0079c3 0%,#004087 54%);
+            background: -ms-linear-gradient(left, #0079c3 0%,#004087 54%);
+            background: linear-gradient(to right, #0079c3 0%,#004087 54%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0079c3', endColorstr='#004087',GradientType=1 );
+        }
+
+        fieldset {
+            border: 0 none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #groupField {
+            width: 350px;
+        }
+
+        #inputs input {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 0 10px;
+            padding: 10px 10px 10px 15px;
+            width: 350px;
+        }
+
+        #username {
+            background-position: 5px -2px !important;
+        }
+
+        #password {
+            background-position: 5px -52px !important;
+        }
+
+        #actions input {
+            width: 350px;
+        }
+
+        #formLogin {
+            float: right;
+            padding-top: 8%;
+            padding-right: 12%;
+        }
+
+        .col-md-12, .col-md-8 {
+            min-height: 1px;
+            padding-left: 1px;
+            position: relative;
+        }
+
+        #back {
+            background: url(@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Assets/img/LenLogin2.png) no-repeat;
+            background-size: contain;
+            height: 100%;
+            width: 100%;
+        }
+
+        .validation-summary-errors {
+            min-width: 350px;
+        }
+
+        .judulAplikasi {
+            font-size: 60px;
+            text-align: right;
+            color: #fff;
+            margin-top: 2%;
+            margin-right: 2%;
+            padding-left: 6%;
+            text-shadow: 1px 0px 1px #ccc, 0px 1px 1px #494848, 2px 1px 1px #ccc, 1px 2px 1px #494848;
+        }
+        html {
+            height:100%;
+        }
+        body {
+            height:100%;
+
+        }
+        .row {
+            height:100%;
+        }
+        .text-white {
+           color:white;
+        }
+    </style>
+
+    <style type="text/css" media="screen and (max-width:720px)">
+        #back {
+            background: none;
+        }
+
+        .judulAplikasi {
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="preload-wrapper"><div id="preloader_1"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="row">
+        <div class="col-md-12" id="back">
+            <h1 class="judulAplikasi">Aplikasi Monitoring Pengadaan</h1>
+            <div id="formLogin">
+                @*<form action="/silen/Account/Login?ReturnUrl=%2Fsilen" method="post">
+                        <input name="__RequestVerificationToken" type="hidden" value="1Uyox3w3oauFhH2v62I7ah4GST1M0ygQtCPQqr9zbldECuyvPUP4FgZoDxK21gL25jRzKqTnUKxpZ-SWg0QVHmd4iGKzB0xHmT-UxsRb-yc1" />        <div style="margin-top:10px">
+                            <div class="validation-summary-valid" data-valmsg-summary="true">
+                                <ul>
+                                    <li style="display:none"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <h1 style="color:#fff;">Login</h1>
+                        <div id="groupField">
+                            <fieldset id="inputs">
+                                <input data-val="true" data-val-required="User name harus terisi" id="username" name="UserName" placeholder="Username" type="text" value="" required/>
+                                <input data-val="true" data-val-required="Password harus terisi" id="password" name="Password" placeholder="Password" type="password" required/>
+
+                            </fieldset>
+                            <fieldset id="actions">
+                                <input type="submit" id="submit" value="Log in" class="btn btn-primary" />
+                            </fieldset>
+                        </div>
+                    </form>*@
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+            {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-white" })
+                    <h1 style="color:#fff;">Login</h1>
+                    <div id="groupField">
+                        <fieldset id="inputs">
+                            <input data-val="true" data-val-required="User name harus terisi" id="username" name="UserName" placeholder="Username" type="text" value="" required />
+                            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                            <input data-val="true" data-val-required="Password harus terisi" id="password" name="Password" placeholder="Password" type="password" required />
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </fieldset>
+                        <fieldset id="actions">
+                            <input type="submit" id="submit" value="Log in" class="btn btn-primary" onclick="go()" />
+                        </fieldset>
+                    </div>
+                    @*<div class="form-group has-feedback">
+                            <input type="text" class="form-control" placeholder="Username" name="@Html.NameFor(n=>n.Username)" required>
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group has-feedback">
+                            <input type="password" class="form-control" placeholder="Password" name="@Html.NameFor(n=>n.Password)" required>
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                            </div><!-- /.col -->
+                            <div class="col-xs-4">
+                                <button type="submit" class="btn btn-primary btn-block btn-flat">@Naming.SignIn</button>
+                            </div><!-- /.col -->
+                        </div>*@
+                }
+            </div>
+            <div style="position:absolute;bottom:2px; right:20px; color:White;">Copyright © 2016 PT. Len Industri (Persero). All Rights Reserved.</div>
+        </div>
+    </div>
+    <!-- jQuery 2.1.4 -->
+    <script src="~/Scripts/Import/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="~/Content/Import/bootstrap/js/bootstrap.min.js"></script>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <script type="text/javascript">
+        $(window).load(function () {
+            $("#preloader_1").fadeOut('slow');
+            $(".preload-wrapper").fadeOut("slow");
+        });
+        function go() {
+            $("#preloader_1").fadeIn('slow');
+            $(".preload-wrapper").fadeIn("slow");
+        }
+    </script>
+</body>
+</html>

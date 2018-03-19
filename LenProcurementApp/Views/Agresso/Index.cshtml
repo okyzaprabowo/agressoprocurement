@@ -1,0 +1,92 @@
+﻿@*@model IEnumerable<LenProcurementApp.Models.DpbModel>*@
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    int i = 0;
+    //WebGrid grid = new WebGrid(Model, rowsPerPage: 5);
+}
+@if (ViewBag.colName == null)
+{
+    <h2>Data tidak tersedia</h2>
+    return;
+}
+
+<h2>Index</h2>
+
+<style type="text/css">
+    .table {
+        margin: 4px;
+        border-collapse: collapse;
+        width: 300px;
+    }
+
+    .header {
+        background-color: #7CB8C5;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .table th, .table td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
+
+<table class="table">
+    <thead>
+        <tr class="header">
+            <td>No</td>
+            @foreach (var item in ViewBag.colName)
+            {
+                <td>@item.ColumnName</td>
+            }
+        </tr>
+        <tr class="header">
+            <td>No</td>
+            @foreach (var item in ViewBag.column)
+            {
+                <td>@item.Caption</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.row)
+        {
+            i++;
+        <tr>
+            <td>@i</td>
+            @{ int j = 0;}
+            @foreach (var colC in ViewBag.column)
+            {
+                <td>@item[j]</td>
+                j++;
+            }
+            @*<td>@item[0]</td>
+            <td>@item[1]</td>
+            <td>@item[2]</td>
+            <td>@item[3]</td>
+            <td>@item[4]</td>
+            <td>@item[5]</td>*@
+
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+@*@grid.GetHtml(
+    tableStyle:"table",
+    fillEmptyRows: true,
+    headerStyle:"header",
+    footerStyle:"grid-footer",
+    mode:WebGridPagerModes.All,
+    firstText: "<< First",
+    previousText: "< Prev",
+    nextText: "Next >",
+    lastText: "Last >>",
+    columns: new[]
+    {
+        grid.Column("col-1"),
+        grid.Column("col-2")
+    }
+)*@

@@ -1,0 +1,232 @@
+﻿@model LenProcurementApp.Models.PrintSPPNew
+@using NumberText
+@{
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    ViewBag.Title = "Print SPP";
+    if (Model == null)
+    {
+        return;
+    }
+}
+<style>
+    @@media print {
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        /*table {
+            border: 1px solid white;
+            border-color: white;
+        }*/
+    }
+
+    /*table {
+        border: 1px solid white;
+        border-color: white;
+    }*/
+
+    table td {
+        vertical-align: top;
+    }
+
+    ol {
+        padding-left: 15px;
+    }
+
+    p {
+        margin: 0;
+    }
+    .border-top {
+        border-top: 1px solid #000000;
+    }
+    .border-bottom {
+        border-bottom: 1px solid #000000;
+    }
+    .border-left{
+        border-left: 1px solid #000000;
+        padding-left: 10px;
+    }
+    .border-right{
+        border-right: 1px solid #000000;
+        padding-right: 10px;
+    }
+
+</style>
+<table border="1">
+    <thead>
+        <tr class="border-top" style="height:15px;"><td width="20%" class="border-left"></td><td width="5%"></td><td width="15%"></td><td width="20%"></td><td width="20%"></td><td width="20%"></td><td width="20%" class="border-right"></td></tr>
+        <tr><td colspan="7" class="text-right border-left border-right"><span style="border: 1px solid black;padding: 5px;font-size:15px;margin-right:5px;">K - 12</span></td></tr>
+        <tr><td class="border-left border-right" colspan="7">&nbsp;</td></tr>
+        <tr>
+            <td class="border-left" rowspan="3">
+                <img style="margin-left:20%;" alt="Len" src="~/Content/Images/logo.png" class="pull-left" height="80" />
+            </td>
+            <td colspan="4" class="text-center" style="font-size:20px;">PT. LEN INDUSTRI (Persero)</td>
+            <td class="border-right" colspan="2"></td>
+        </tr>
+        <tr><td colspan="4" class="text-center" style="font-size:15px;">Surat Permintaan Pembayaran (SPP)</td><td class="border-right" colspan="2"></td></tr>
+        <tr><td colspan="4" class="text-center" style="font-size:15px;">No. @Model.spp_number</td><td class="border-right" colspan="2"></td></tr>
+        <tr><td class="border-left border-right" colspan="7" style="height:10px;"></td></tr>
+    </thead>
+    <tbody>
+        <tr class="border-top">
+            <td class="border-left">JOB CODE</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.job_code_x</td>
+        </tr>
+        <tr class="border-top">
+            <td class="border-left">No. Dokumen</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.po</td>
+        </tr>
+        <tr class="border-top">
+            <td class="border-left">Rekanan / Kontraktor</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.supplier</td>
+        </tr>
+        <tr>
+            <td class="border-left">Alamat</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.address</td>
+        </tr>
+        <tr class="border-bottom">
+            <td class="border-left">NPWP</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.npwp</td>
+        </tr>
+        <tr><td class="border-left border-right" colspan="7"><br /></td></tr>
+        <tr>
+            <td class="border-left" style="font-size:12px;">No. Faktur Penagihan</td>
+            <td align="center">:</td>
+            <td colspan="2">@Model.invoice_num</td>
+            <td>@{
+                string nodate = "Tanggal tidak tersedia";
+                if (Model.invoice_date != null && Model.invoice_date > DateTime.MinValue)
+                {
+                    @Model.invoice_date.ToLongDateString();
+                }
+                else
+                {
+                    @nodate;
+                }
+            }</td>
+            @{ 
+                double d1 = Math.Round(Model.invoice_value, 2);
+                string sd1 = d1.ConvertToDot();
+            }
+            <td class="text-right border-right autoNum" colspan="2">@sd1</td>
+        </tr>
+        <tr><td class="border-left border-right" colspan="7"><br /></td></tr>
+        @*<tr>
+            <td>Jumlah</td>
+            <td align="center">:</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="text-right text-bold">IDR <span class="autoNum">@Model.total</span></td>
+        </tr>*@
+        <tr>
+            <td class="border-left">Terbilang</td>
+            <td align="center">:</td>
+            <td colspan="5" class="text-bold border-right">@ViewBag.intWord RUPIAH</td>
+        </tr>
+        <tr>
+            <td class="border-left">Transfer ke Bank</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.bank_name</td>
+        </tr>
+        <tr>
+            <td class="border-left">No. Rekening</td>
+            <td align="center">:</td>
+            <td colspan=5" class="border-right">@Model.bill_number &nbsp; &nbsp; &nbsp; (a.n. @Model.bill_owner)</td>
+        </tr>
+        <tr class="border-top border-bottom border-left">
+            <td class="border-left">Untuk Pembayaran</td>
+            <td align="center">:</td>
+            <td colspan="5" class="border-right">@Model.payment_for</td>
+        </tr>
+        @*<tr><td class="border-left border-right" colspan="7"><br /></td></tr>*@
+        <tr class="border-bottom"><td class="border-left" colspan="3" style="padding-top:10px;">Diajukan</td><td colspan="6" class="border-left border-right" style="padding-top:10px;">LAMPIRAN PENAGIHAN</td></tr>
+        <tr class="border-bottom">
+            <td class="border-left" colspan="3">
+                <p>@Model.kabag_from,</p><br /><br /><br />
+                <p>@Model.kabag_from_name</p>
+                <p>NIK. @Model.kabag_from_nik</p>
+                <p>(0-200juta Kabag. 200-5m Kadiv 5M keatas Direksi)</p>
+            </td>
+            <td colspan="6" class="border-left border-right">
+                <ol id="attachment-data"></ol>
+            </td>
+        </tr>
+        <tr><td class="border-left border-right" colspan="7"><br /></td></tr>
+        <tr class="border-bottom border-left border-right"><td colspan="7" align="center">VERIFIKASI</td></tr>
+        <tr>
+            <td class="border-left border-right" colspan="7">No. Agenda Masuk &nbsp; : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; No. Agenda Keluar &nbsp; : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / VER / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /</td>
+            
+        </tr>
+        <tr><td class="border-left border-right"" colspan="7"><br /></td></tr>
+        <tr><td class="border-left border-right"" colspan="7" align="center">Siap Diproses / Dibayar,</td></tr>
+        <tr>
+            <td class="border-left border-right" colspan="7" align="center">
+                <br />
+                <br />
+                <br />
+                <p><u>@Model.kabag_accounting_name</u></p>
+            </td>
+        </tr>
+        <tr class="border-bottom border-right"" style="height:20px;"><td class="border-left" colspan="7"></td></tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //loadInvoice();
+            loadAttachment();
+        });
+        function loadAttachment() {
+            var attName = ["Kwitansi/ Faktur", "Faktur Pajak", "Copy SP/ SPK/ SPERJ", "DPB", "Surat Jalan/ BAST", "BAPB/J", "Jaminan Uang Muka", "Jaminan Pelaksanaan", "Referensi Bank", "Jaminan Pemeliharaan", "DPAT", "Form Kenaikan Harga", "SIUJK"];
+            var attOptions = "@Model.attachment";
+            var temp = new Array();
+            var iter = 1;
+            temp = attOptions.split(",");
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i] == "true") {
+                    var stringAtt = '<li>'+attName[i]+'</li>';
+                    $("#attachment-data").append(stringAtt);
+                    iter++;
+                } else {
+
+                }
+            }
+            var another = "@string.Join(", ", Model.another)";
+            if (another && another !== null && another != "") {
+                var anotherRow = '<li>' + another + '</li>';
+                $("#attachment-data").append(anotherRow);
+            }
+        }
+        function loadInvoice() {
+            var data = "@Model.invoice_number";
+            if (data) {
+                var invoiceParse = JSON.parse(data.replace(/&quot;/g, '"'));
+                var totalPrice = 0;
+                for (var i = 0; i < invoiceParse.length; i++) {
+                    var item = '<tr>' +
+                                '<td>No. Faktur Penagihan</td>' +
+                                '<td align="center">:</td>' +
+                                '<td>' + invoiceParse[i].number + '</td>' +
+                                '<td>' + invoiceParse[i].date + '</td>' +
+                                '<td class="text-right auto">' + invoiceParse[i].total + '</td>' +
+                            '</tr>';
+                    $("#invoice-data").append(item);
+                    totalPrice += parseInt(invoiceParse[i].total);
+                }
+                $("#total-price").text(totalPrice);
+            }
+        }
+    </script>
+}

@@ -1,0 +1,507 @@
+﻿@model LenProcurementApp.Models.SppDashboard
+@using LenProcurementApp.Models
+@{
+    ViewBag.Title = "SPP";
+    ViewBag.SubTitle = ViewBag.po;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (ViewBag.po == null)
+    {
+        return;
+    }
+    //List<Invoice> invoiceList = ViewBag.invoiceList;
+    var formatNumber = "#,0.00;(#,0.00)";
+    var price = 5768840;
+    var formated = price.ToString(formatNumber);
+}
+<div id="delivered-result"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                @if (Model != null && Model.spp_id > 0)
+                {
+                    <h3 class="box-title">Ubah SPP</h3>
+                }
+                else
+                {
+                    <h3 class="box-title">SPP Baru</h3>
+                }
+            </div><!-- /.box-header -->
+            <!-- form start -->
+            
+                <input type="hidden" name="po" value="@ViewBag.po" />
+
+
+            @if (Model != null && Model.spp_id > 0)
+            {
+                @Html.HiddenFor(m=>m.spp_id)
+            }
+                <div class="box-body">
+                    <form class="form-horizontal" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Supplier</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="supplier" placeholder="" value="@ViewBag.supplier" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.spp_number, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.spp_number, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-lg-offset-2">
+                                <table class="table" style="border-bottom:2px solid #f4f4f4; margin-bottom:7px;">
+                                    <thead>
+                                        <tr>
+                                            <th>No Faktur</th>
+                                            <th>Tanggal (d/m/y)</th>
+                                            <th>Jumlah Pembayaran (@ViewBag.cur)</th>
+                                            @*<th>Aksi</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoice-data">
+                                        <tr>
+                                            <td><input class="form-control" type="text" name="invoice_number" id="invoice_number_1" placeholder="" value="@Model.invoice_num" required/></td>
+                                            <td><input class="form-control datepicker2" type="text" name="invoice_date" id="invoice_date_1" placeholder="" value="@Model.invoice_date" required/></td>
+                                            <td><input class="form-control autoNum" type="text" name="invoice_total" id="invoice_total_1" placeholder="" value="@Model.invoice_value" required/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                @*<span id="new-invoice" class="btn btn-primary">Tambah Faktur</span>*@
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.payment_for, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.payment_for, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.attachment, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                <div id="attachment-parent">
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_1" class="minimal-red">
+                                            Kwitansi/ Faktur
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_2" class="minimal-red">
+                                            Faktur Pajak
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_3" class="minimal-red">
+                                            Copy SP/ SPK/ SPERJ
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_4" class="minimal-red">
+                                            DPB
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_5" class="minimal-red">
+                                            Surat Jalan/ BAST
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_6" class="minimal-red">
+                                            BAPB/J
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_7" class="minimal-red">
+                                            Jaminan Uang Muka
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_8" class="minimal-red">
+                                            Jaminan Pelaksanaan
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_9" class="minimal-red">
+                                            Referensi Bank
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_10" class="minimal-red">
+                                            Jaminan Pemeliharaan
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_11" class="minimal-red">
+                                            DPAT
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_12" class="minimal-red">
+                                            Form Kenaikan Harga
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label class="no-padding-left">
+                                            <input type="checkbox" id="attachment_13" class="minimal-red">
+                                            SIUJK
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                @Html.LabelFor(m => m.another)
+                                <br />
+                                @*@Html.TextAreaFor(m => m.another, new { @class = "form-control" })*@
+                                @Html.TextBoxFor(m => m.another, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.note, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                @Html.TextAreaFor(m => m.note, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </form>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <a href="~/Po/SPPBoard?po=@ViewBag.po" class="btn btn-default">Kembali ke SPP Board</a>
+                    <button class="btn btn-primary pull-right" id="save-change">Simpan</button>
+                    @if (Model != null && Model.spp_id > 0)
+                    {
+                        @*<button class="btn btn-success pull-right margin-right" id="printout-change"> Print </button>*@
+                        <button class="btn btn-success pull-right margin-right" data-toggle="modal" data-target="#print-modal"> Print </button>
+                        @*<button class="btn btn-success pull-right margin-right"> Print </button>*@
+                        <a onclick="return confirm('Anda yakin akan menghapus data ini?')" href="~/Po/SppDelete/@Model.spp_id?po=@ViewBag.po" class="btn btn-danger pull-right margin-right">Hapus</a>
+                    }
+                </div><!-- /.box-footer -->
+        </div>
+    </div>
+</div>
+
+<div id="print-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Persiapan Print</h4>
+            </div>
+            <form class="form-horizontal" method="post" action="~/Out/MultiplePrint">
+                <input type="hidden" name="supplier" value="@ViewBag.supplier" />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-4 control-label">Pilih PO</label>
+                        <div class="col-sm-8">
+                            <select required class="form-control select2" name="multiple_po" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" id="multiple-po">
+                                @if (ViewBag.options != null)
+                                {
+                                    bool firstTime = true;
+                                    foreach (string item in ViewBag.options)
+                                    {
+                                        if (item == ViewBag.po && firstTime)
+                                        {
+                                            firstTime = false;
+                                            <option selected>@item</option>
+                                        }
+                                        else
+                                        {
+                                            <option>@item</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.spp_number, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.spp_number, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class = "col-sm-4 control-label">Tanggal SPP (d/m/y)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control datepicker2" name="@Html.NameFor(m=>m.spp_date)" value="@Model.spp_date.ToShortDateString()" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.address, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.address, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.npwp, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.npwp, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.bank_name, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.bank_name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.bill_number, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.bill_number, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.bill_owner, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.bill_owner, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.kabag_from, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.kabag_from, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.kabag_from_name, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.kabag_from_name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.kabag_from_nik, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.kabag_from_nik, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.kabag_accounting_name, new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(m => m.kabag_accounting_name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="state" id="state" value="0" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+                    @if (System.Configuration.ConfigurationManager.AppSettings["UsePDFButton"] == "true")
+                    {
+                        <button class="btn btn-info margin-right" onmouseover="changeState(2)"> Download PDF </button> 
+                    }
+                    <button type="submit" class="btn btn-danger" id="multiple-print" onmouseover="changeState(1)">Print</button>
+                    <button type="submit" class="btn btn-primary" id="multiple-print" onmouseover="changeState(3)">Save</button> 
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+@*<a href="~/Dashboard/PrintSPP" style="display:none;" target="_blank" id="print-now">redirect</a>*@
+@section Styles {
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/Scripts/Import/select2/select2.min.css">
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice{background-color:#3c8dbc;border-color:#367fa9;}
+    </style>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <!-- Select2 -->
+    <script src="~/Scripts/Import/select2/select2.full.min.js"></script>
+
+    <script type="text/javascript">
+        $(".select2").select2();
+        //$("#multiple-print").on("click", multiplePrint);
+        $(document).ready(function(){
+            var attOptions = "@ViewBag.attachmentOptions";
+            var temp = new Array();
+            temp = attOptions.split(",");
+            for(var i = 0; i < temp.length; i++){
+                var attModel = $("#attachment_" + (i + 1));
+                if(temp[i] == "true"){
+                    attModel.iCheck("check");
+                } else {
+                    attModel.iCheck("uncheck");
+                }
+            }
+            //loadInvoice();
+        });
+        var urlSave = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Po/SPPForm";
+        var urlPrint = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Out/PrintSPP";
+        var urlBack = "@System.Configuration.ConfigurationManager.AppSettings["BaseUrl"]Po/SPPBoard?po=@ViewBag.po";
+        $("#save-change").on("click", function () {
+            getData(urlSave, false);
+        });
+        $("#printout-change").on("click", function () {
+            getData(urlSave, true);
+        });
+        $("#new-invoice").on("click", function () {
+            newInvoice();
+        });
+        function multiplePrint(){
+            console.log($("#multiple-po").val());
+        }
+        function loadInvoice(){
+            var data = "@Model.invoice_number";
+            if(data){
+                var invoiceParse = JSON.parse(data.replace(/&quot;/g,'"'));
+                for(var i = 1; i <= invoiceParse.length; i++){
+                    var item = '<tr>' +
+                                '<td><input class="form-control" type="text" name="invoice_number" id="invoice_number_'+(i)+'" placeholder="" value="'+invoiceParse[i-1].number+'" /></td>' +
+                                '<td><input class="form-control datepicker2" type="text" name="invoice_date" id="invoice_date_'+(i)+'" placeholder="" value="'+invoiceParse[i-1].date+'" /></td>' +
+                                '<td><input class="form-control autoNum" type="text" name="invoice_total" id="invoice_total_'+(i)+'" placeholder="" value="'+invoiceParse[i-1].total+'" /></td>' +
+                                '<td><span class="btn btn-danger" onclick="invoiceDelete(this, '+(i)+')"> Hapus </span></td>' +
+                            '</tr>';
+                    $("#invoice-data").append(item);
+                }
+            }
+        }
+        function newInvoice(){
+            var rowSize = $("#invoice-data").children().size()+1;
+            var item = '<tr>' +
+                            '<td><input class="form-control" type="text" name="invoice_number" id="invoice_number_'+rowSize+'" placeholder="" /></td>' +
+                            '<td><input class="form-control datepicker2" type="text" name="invoice_date" id="invoice_date_'+rowSize+'" placeholder="" /></td>' +
+                            '<td><input class="form-control" type="text" name="invoice_total" id="invoice_total_'+rowSize+'" placeholder="" /></td>' +
+                            '<td><span class="btn btn-danger" onclick="invoiceDelete(this)"> Hapus </span></td>' +
+                        '</tr>';
+            $("#invoice-data").append(item);
+        }
+        function getData(url, isPrint){
+            loader(true);
+
+            resetDotAutoNum();
+
+            var note = $("#note-model").val();
+            var invoiceSize = $("#invoice-data").children().size();
+            var attSize = $("#attachment-parent").children().size();
+            var array = [];
+            var i;
+            for (i = 0; i < attSize; i++) {
+                var attModel = $("#attachment_" + (i + 1));
+                array.push(attModel.is(':checked'));
+            }
+            var invoiceArray = [];
+            for (i = 0; i < invoiceSize; i++) {
+                var noInvoice = $("#invoice_number_" + (i + 1)).val();
+                var dateInvoice = $("#invoice_date_" + (i + 1)).val();
+                var totalInvoice = $("#invoice_total_" + (i + 1)).val();
+                if(noInvoice != null && noInvoice != ""){
+                    invoiceArray.push({number: noInvoice, date: dateInvoice, total: totalInvoice});
+                }
+            }
+            var arrayString = array.toString();
+            var invoiceString = invoiceArray.length > 0 ? JSON.stringify(invoiceArray) : null;
+            var objectData = {
+                po: @ViewBag.po,
+                spp_number: $("#spp_number").val(),
+                //spp_date: $("#spp_date").val(),
+                supplier: $("#supplier").val(),
+                document_number: $("#document_number").val(),
+                address: $("#address").val(),
+                npwp: $("#npwp").val(),
+                invoice_number: invoiceString,
+                bank_name: $("#bank_name").val(),
+                bill_number: $("#bill_number").val(),
+                bill_owner: $("#bill_owner").val(),
+                payment_for: $("#payment_for").val(),
+                attachment: arrayString,
+                another: $("#another").val(),
+                note: $("#note").val(),
+                kabag_from: $("#kabag_from").val(),
+                kabag_from_name: $("#kabag_from_name").val(),
+                kabag_from_nik: $("#kabag_from_nik").val(),
+                kabag_accounting_name: $("#kabag_accounting_name").val()
+            };
+            if($("#spp_id").val() != undefined){
+                objectData.spp_id = Number($("#spp_id").val());
+            }
+            sendData(url, objectData, isPrint);
+        }
+        function sendData(url, objectData, isPrint){
+            console.log(objectData);
+            $.post(url, objectData, function (data) {
+                var result;
+                if(data == "True"){
+                    result = '<div class="alert alert-success alert-dismissable" id="success-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="success-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Berhasil disimpan. </div>';
+                    if(isPrint){
+                        redirect(urlPrint);
+                        //console.log($("#print-now"));
+                        //$("#print-now").click();
+                    } else {
+                        redirect(urlBack);
+                    }
+                } else {
+                    result = '<div class="alert alert-danger alert-dismissable" id="failed-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="failed-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Gagal disimpan. Silahkan coba lagi atau hubungi Administrator. </div>';
+                }
+                resulting(result);
+            }).fail(function(){
+                resulting('<div class="alert alert-danger alert-dismissable" id="failed-delivered"> <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="failed-close">&times;</button> <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Gagal disimpan. Silahkan coba lagi atau hubungi Administrator. </div>');
+            }).always(function(){
+                if(!isPrint){
+                    loader(false);
+                }
+            });
+        }
+        function resulting(result){
+            $("#delivered-result").html(result);
+        }
+        // http://stackoverflow.com/questions/503093/how-to-redirect-to-another-page-in-jquery
+        function redirect (url) {
+            var ua        = navigator.userAgent.toLowerCase(),
+                isIE      = ua.indexOf('msie') !== -1,
+                version   = parseInt(ua.substr(4, 2), 10);
+
+            // Internet Explorer 8 and lower
+            if (isIE && version < 9) {
+                var link = document.createElement('a');
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+            }
+
+                // All other browsers can use the standard window.location.href (they don't lose HTTP_REFERER like IE8 & lower does)
+            else {
+                 window.location.href = url;
+                //window.open(url, '_blank');
+            }
+        }
+        function invoiceDelete(th, id){
+            var confirmation = true;
+            if(id){
+                confirmation = confirm('Anda yakin akan menghapus data ini?');
+            }
+            if(confirmation){
+                var par = $($(th).parent()).parent();
+                $(par).remove();
+                if(!id){
+
+                } else {
+
+                }
+            }
+        }
+        $(document).on('click', '.datepicker2', function(){
+            $(this).datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: true,
+                todayHighlight: true
+            }).focus();
+            $(this).removeClass("datepicker2");
+        });
+
+        function changeState(s) {
+            var state = $("#state");
+            state.val(s);
+        }
+    </script>
+}

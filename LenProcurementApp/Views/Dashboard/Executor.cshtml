@@ -1,0 +1,118 @@
+﻿@model IEnumerable<LenProcurementApp.Models.Profile>
+@using LenProcurementApp.Models
+@{
+    ViewBag.Title = "Pelaksana";
+    //ViewBag.Title = "Executor DPB " + ViewBag.dpb;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (ViewBag.dpb == null) {
+        return;
+    }
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>DPB</td>
+                            <td>: @ViewBag.dpb</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title text-blue">Pelaksana Terpilih</h3>
+                    </div>
+                    <div class="box-body">
+                        <table id="lendatatable" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Inisial</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.currentModel != null)
+                                {
+                                    List<Profile> profiles = ViewBag.currentModel;
+                                    foreach (var item in profiles.Select((value, i) => new { i, value }))
+                                    {
+                                        <tr>
+                                            <td>@(item.i + 1)</td>
+                                            <td>@item.value.full_name</td>
+                                            <td>@item.value.initials</td>
+                                            <td><a onclick="return confirm('Anda yakin akan menghapus data ini?')" class="btn btn-danger btn-xs btn-block" href="~/Dashboard/ExecutorAction/@item.value.user_id?dpb=@ViewBag.dpb&act=delete">Hapus</a></td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer">
+                        @if (Session["pageNumber"] != null)
+                        {
+                            <a href="~/Dashboard/Index?page=@Session["pageNumber"]" class="btn btn-default">Kembali ke Dashboard</a>
+                        }
+                        else
+                        {
+                            <a href="~/Dashboard/Index" class="btn btn-default">Kembali ke Dashboard</a>
+                        }
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title text-blue">Tambah Pelaksana Baru</h3>
+                    </div>
+                    <div class="box-body">
+                        <table id="lendatatable2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Inisial</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model.Select((value, i) => new { i, value }))
+                                    {
+                                        <tr>
+                                            <td>@(item.i + 1)</td>
+                                            <td>@item.value.full_name</td>
+                                            <td>@item.value.initials</td>
+                                            <td><a class="btn btn-primary btn-xs btn-block" href="~/Dashboard/ExecutorAction/@item.value.user_id?dpb=@ViewBag.dpb&act=add">Tambahkan</a></td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    @*<div class="box-footer">
+                        <a href="~/Dashboard/Index" class="btn btn-default">Kembali ke Dashboard</a>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

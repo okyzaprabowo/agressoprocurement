@@ -1,0 +1,84 @@
+﻿@model IEnumerable<LenProcurementApp.Models.ExcelActive>
+@{
+    ViewBag.Title = "Ekspor ke Excel";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">Masukan tanggal</h3>
+            </div><!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-4 control-label">Dari tanggal</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="from" class="form-control datepicker" id="from" value="@ViewBag.from">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-4 control-label">Sampai tanggal</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="to" class="form-control datepicker" id="to" value="@ViewBag.to">
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-info pull-right">Ekspor</button>
+                </div><!-- /.box-footer -->
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        @if (ViewBag.info != null)
+        {
+            if (ViewBag.info == "Berhasil diekspor")
+            {
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-info"></i> Informasi</h4>
+                    @ViewBag.info
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-info"></i> Informasi</h4>
+                    @ViewBag.info
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@*Dummy*@
+@if (ViewBag.kolom != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <table>
+                <thead>
+                    <tr>
+                        @foreach (var item in ViewBag.kolom)
+                        {
+                            <td>@item</td>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                {
+                        <tr>
+                            <td>@item.dpb</td>
+                            <td>@if(item.tgl_pengajuan != null){@item.tgl_pengajuan}</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

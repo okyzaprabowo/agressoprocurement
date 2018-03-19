@@ -1,0 +1,87 @@
+﻿@model IEnumerable<LenProcurementApp.Models.Payment>
+@using NumberText
+@{
+    ViewBag.Title = "Pembayaran PO " + ViewBag.po;
+    ViewBag.SubTitle = ViewBag.po;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    //if (Model == null)
+    //{
+    //    return;
+    //}
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            @if (ViewBag.addPayment)
+            {
+                <div class="box-header">
+                    <a href="~/Po/PaymentForm?po=@ViewBag.po" class="btn btn-primary">Tambah Pembayaran Baru</a>
+                </div>
+            }
+            <div class="box-body">
+                <table id="lendatatable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Pembayaran</th>
+                            <th>Metode Pembayaran</th>
+                            <th>Jadwal Pembayaran (d/m/y)</th>
+                            <th>Nilai Tagihan</th>
+                            <th>Tanggal Tagihan Masuk (d/m/y)</th>
+                            <th class="text-center">Status</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(Model.Count() > 0)
+                        {
+                            foreach (var item in Model.Select((value, i) => new { i, value }))
+                            {
+                                <tr>
+                                    <td>@(item.i + 1)</td>
+                                    <td>
+                                        @if (ViewBag.addPayment)
+                                        {
+                                            <a href="~/Po/PaymentForm?po=@ViewBag.po&pay=@item.value.payment_id">@item.value.payment</a>
+                                        }
+                                        else
+                                        {
+                                            <span>@item.value.payment</span>
+                                        }
+                                    
+                                    </td>
+                                    <td>@item.value.payment_method</td>
+                                    <td>@item.value.payment_schedule.ToShortDateString()</td>
+                                    @{
+                                        double d1 = Math.Round(item.value.claim_value, 2);
+                                        string sd1 = d1.ConvertToDot();
+                                     }
+                                    <td class="text-right autoNum">@sd1</td>
+                                    <td>@item.value.claim_date.ToShortDateString()</td>
+                                    <td class="text-center">@Html.CheckBoxFor(m => item.value.status, new { @class = "minimal-red", @disabled = "true" })</td>
+                                    <td>@if(item.value.note != null)
+                                    {
+                                        @item.value.note
+                                    }
+                                    else
+                                    {
+                                        <center><span class="text-danger"><i class="fa fa-ban"></i></span></center>
+                                    }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            @*<tr><td colspan="8"><center>Data belum tersedia</center></td></tr>*@
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <a href="~/Po/POBoard?po=@ViewBag.po" class="btn btn-default">Kembali ke PO</a>
+            </div>
+        </div>
+    </div>
+</div>

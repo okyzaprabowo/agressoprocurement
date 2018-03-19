@@ -1,0 +1,140 @@
+﻿@using LenProcurementApp.Models
+@using Microsoft.AspNet.Identity
+@{
+    Dictionary<string, string> searchMenu = new Dictionary<string, string>();
+    searchMenu["dpb"] = "DPB";
+    searchMenu["po"] = "PO";
+    //searchMenu["poimpor"] = "PO Impor";
+    searchMenu["spph"] = "SPPH";
+    //searchMenu["bapb"] = "BAPB";
+    searchMenu["jcode"] = "Job Code";
+    if (!ViewBag.isUserDpb) {
+        searchMenu["plk"] = "Pelaksana";
+        searchMenu["udpb"] = "User DPB";
+        //searchMenu["sup"] = "Supplier";
+        //searchMenu["spp"] = "SPP";
+    }
+}
+<nav class="navbar navbar-static-top" role="navigation">
+    <div class="notcontainer">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand"><b>Aplikasi</b> Monitoring Pengadaan</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+            <form class="navbar-form navbar-left" role="search" action="~/Dashboard/Search">
+                <div class="nav navbar-nav">
+                    <div class="form-group">
+                        @if (ViewBag.keyword != null)
+                        {
+                            <input type="text" name="keyword" class="form-control" id="navbar-search-input" placeholder="Masukan kata kunci" value="@ViewBag.keyword">
+                        }
+                        else
+                        {
+                            <input type="text" name="keyword" class="form-control" id="navbar-search-input" placeholder="Masukan kata kunci">
+                        }
+                    </div>
+                    <select name="category" class="form-control dropdown-toggle" style="background: #63a4ca;color: white;border:none" required>
+                        @*<option value="">Pilih Kategori</option>*@
+                        @foreach (var item in searchMenu.Keys)
+                        {
+                            if (ViewBag.category != null && item == ViewBag.category)
+                            {
+                                <option value="@item" selected>@searchMenu[item]</option>
+                            }
+                            else
+                            {
+                                <option value="@item">@searchMenu[item]</option>
+                            }
+                        }
+                    </select>
+                    <!-- Date and time range -->
+                    <div class="form-group" style="margin-bottom:0;">
+                        <div class="input-group">
+                            <a class="btn btn-info pull-right" id="daterange-btn">
+                                <i class="fa fa-calendar"></i> <span id="reportrange">Filter Tanggal</span>
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <input type="hidden" name="from" id="dateFrom" value="" />
+                    <input type="hidden" name="to" id="dateTo" value="" />
+                    <!-- /.form group -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-info btn-flat"><i class="fa fa-search"></i> &nbsp; Cari</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.navbar-collapse -->
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <!-- Messages: style can be found in dropdown.less-->
+                @*<li class="dropdown notifications-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-envelope-o"></i>
+                        <span class="label label-warning">3</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <!-- inner menu: contains the actual data -->
+                            <ul class="menu">
+                                <li>
+                                    <!-- start message -->
+                                    <a href="#">
+                                        <i class="fa fa-warning text-yellow"></i> PO #123456789/ABCD/2016
+                                    </a>
+                                    <a href="#">
+                                        <i class="fa fa-warning text-yellow"></i> PO #123456789/ABCD/2016
+                                    </a>
+                                    <a href="#">
+                                        <i class="fa fa-warning text-yellow"></i> PO #123456789/ABCD/2016
+                                    </a>
+                                </li><!-- end message -->
+                            </ul>
+                        </li>
+                        <li class="footer"><a href="#">@Naming.SeeAllNotif</a></li>
+                    </ul>
+                </li>*@
+
+                <!-- User Account: style can be found in dropdown.less -->
+                <li><a href="~/Downloads/Dokumentasi Aplikasi Monitoring Pengadaan.pdf"><i class="fa fa-book"></i> Help</a></li>
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-user"></i>
+                        <span class="hidden-xs">@ViewBag.userFullName</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- User image -->
+                        <li class="user-header">
+                            <i class="fa fa-user" style="color:#FFFFFF;font-size:100px;"></i>
+                            <p class="text-bold">
+                                @ViewBag.position
+                                @*<small>Member since Nov. 2012</small>*@
+                            </p>
+                        </li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            @*<div class="pull-left">
+                                <a href="#" class="btn btn-default btn-flat">@Naming.Profile</a>
+                            </div>*@
+                            <div class="pull-right">
+                                @if (Request.IsAuthenticated)
+                                {
+                                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm"}))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-danger btn-flat">@Naming.SignOut</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a href="~/Account/Login" class="btn btn-default btn-flat">@Naming.SignIn</a>
+                                }
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div><!-- /.container-fluid -->
+</nav>

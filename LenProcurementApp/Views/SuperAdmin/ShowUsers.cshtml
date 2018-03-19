@@ -1,0 +1,98 @@
+﻿@*@model IEnumerable<LenProcurementApp.Models.EditUserViewModel>*@
+@using LenProcurementApp.Models
+@model EditUserViewModel
+@{
+    ViewBag.Title = Naming.Users;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    int i = 0;
+}
+<div class="row">
+    <div class="col-md-7">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Pengguna Terbaru</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <table id="lendatatable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Html.DisplayNameFor(model => model.full_name)</th>
+                            <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                            <th>@Html.DisplayNameFor(model => model.initials)</th>
+                            <th>@Html.DisplayNameFor(model => model.position)</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (EditUserViewModel item in ViewBag.model)
+            { i++;
+                        <tr>
+                            <td>
+                                @i
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.full_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.initials)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.position)
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Pilih Aksi
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="~/SuperAdmin/ShowUsers?UserName=@item.UserName"><i class="fa fa-pencil"></i> Edit</a></li>
+                                        @if (item.position != ViewBag.developerRole)
+                                        {
+                                        <li><a onclick="return confirm('Anda yakin akan menghapus data ini?')" href="~/SuperAdmin/DeleteUser?UserName=@item.UserName"><i class="fa fa-trash"></i> Hapus</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        @Html.Partial("_CreateUser")
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        var changeDiv = $("#position");
+        var changeValue = $("#divisi");
+        var hidenDiv = $("#divisiDiv");
+        var strCompare = "@ViewBag.roleUserDpb";
+        $(document).ready(function () {
+            var roleStart = changeDiv.val();
+            if (roleStart == strCompare) {
+                hidenDiv.show();
+            } else {
+                hidenDiv.hide();
+            }
+        });
+        changeDiv.change(function () {
+            var role = changeDiv.val();
+            if (role == strCompare) {
+                hidenDiv.show()
+            } else {
+                changeValue.val(0);
+                hidenDiv.hide();
+            }
+        });
+    </script>
+}

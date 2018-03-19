@@ -1,0 +1,106 @@
+﻿@model IEnumerable<LenProcurementApp.Models.NewMainDashboard>
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    int i = 0;
+}
+
+@*<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TestQuery</title>
+    <style type="text/css">
+        .table {
+            margin: 4px;
+            border-collapse: collapse;
+            width: 300px;
+        }
+
+        .header {
+            background-color: #7CB8C5;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .table th, .table td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>*@
+    <div> 
+        @*<p>Total list New = @ViewBag.newCount</p>
+        <table class="table">
+            <tbody>
+                @foreach (var item in ViewBag.newModel)
+                {
+                    <tr>
+                        <td>@if (item.user_dpb != null) { @item.user_dpb; } else { <i>Kosong</i> }</td>
+                        <td>@item.jml_item</td>
+                        <td>@if (item.plk != null) { @item.plk; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.divisi != null) { @item.divisi; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.job_code != null) { @item.job_code; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.job_code_t != null) { @item.job_code_t; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.dpb != null) { @item.dpb; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.spph != null) { @item.spph; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.po != null) { @item.po; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.supplier_t != null) { @item.supplier_t; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.supplier_t != null) { @item.supplier_t; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.barang_tiba != null) { @item.barang_tiba; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.spp != null) { @item.spp; } else { <i>Kosong</i> }</td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
+        <p>Total list = @ViewBag.newCount</p>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="header">
+                    <th>No</th>
+                    <th>User</th>
+                    <th>Jml.Item</th>
+                    <th>PLK</th>
+                    <th>Divisi</th>
+                    <th>JobCode</th>
+                    <th>JobCode(T)</th>
+                    <th>DPB</th>
+                    <th>SPPH</th>
+                    <th>PO</th>
+                    <th>Supplier(T)</th>
+                    <th>BAPB</th>
+                    <th>Brg.Tiba</th>
+                    <th>SPP</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@if (item.user_dpb != null) { @item.user_dpb; } else { <i>Kosong</i> }</td>
+                        <td>@item.jml_item</td>
+                        @*<td>@if (item.jml_item != null) { @item.jml_item; } else { <i>Kosong</i> }</td>*@
+                        <td>@if (item.plk != null) { @item.plk; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.divisi != null) { @item.divisi; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.job_code != null) { @item.job_code; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.job_code_t != null) { @item.job_code_t; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.dpb != null) { @item.dpb; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.spph != null) { @item.spph; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.po != null) { @item.po; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.supplier_t != null) { @item.supplier_t; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.supplier_t != null) { @item.supplier_t; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.barang_tiba != null) { @item.barang_tiba; } else { <i>Kosong</i> }</td>
+                        <td>@if (item.spp != null) { @item.spp; } else { <i>Kosong</i> }</td>
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+    </div>
+@*</body>
+</html>*@

@@ -1,0 +1,106 @@
+﻿@using LenProcurementApp.Models
+@*@{
+    Layout = null;
+}*@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">    
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="~/Content/Import/bootstrap/css/bootstrap.min.css">    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/Import/fonts/font-awesome.css">
+    <!-- Ionicons
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->    
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/Import/dist/css/AdminLTE.min.css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /*.table td.fit,
+        .table th.fit {
+            white-space: nowrap;
+            width:1%;
+        }*/
+        .width-col-1 {
+            width:170px;
+        }
+        .width-col-2 {
+            width:5px;
+        }
+        p {
+            margin: 0 0 0 5px;
+        }
+        .table>tbody>tr>td {
+            padding: 0;
+            border:none;
+        }
+        .header-padding {
+            padding: 0 0 15px 0;
+        }
+        .header-padding img {
+            margin-left: 30px;
+        }
+        table {
+            border: 1px solid white;
+        }
+
+        @RenderSection("styles", required: false)
+    </style>
+</head>
+<body onload = "window.print();">
+    <div class="wrapper">
+        <!-- Main content -->
+        @if (ViewBag.noData)
+            {
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> @Naming.NoData</h4>
+                Silahkan coba lagi atau hubungi bagian Administrator.
+            </div>
+        }
+        <section class="invoice">
+            @RenderBody()
+        </section><!-- /.content -->
+    </div><!-- ./wrapper -->
+    <!-- jQuery 2.1.4 -->
+    <script src="~/Scripts/Import/jQuery/jQuery-2.1.4.min.js"></script>    
+    <!-- Auto Numeric -->
+    <script src="~/Scripts/Import/autoNumeric/autoNumeric-min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".autoNum").autoNumeric('init', {
+                aSep: '.',
+                aDec: ','
+                //aSign: 'Rp '
+            });  //autoNumeric with defaults
+
+            $('form').submit(function () {
+                var form = $(this);
+                $('form').find('input.autoNum').each(function () {
+                    var self = $(this);
+                    var v = self.autoNumeric('get');
+                    // self.autoNumeric('destroy');
+                    self.val(v);
+                });
+            });
+        });
+    </script>
+    <!-- AdminLTE for demo purposes -->
+    @*<script src="~/Scripts/Import/autoNumeric/autoNumeric-min.js"></script>*@    
+    <!-- AdminLTE App -->
+    @*<script src="../../dist/js/app.min.js"></script>*@
+    <!-- page script -->
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

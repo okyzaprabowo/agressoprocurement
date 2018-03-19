@@ -1,0 +1,91 @@
+﻿@model LenProcurementApp.Models.PoOption
+<div class="box box-primary">
+    <div class="box-body">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        <label>
+                            @if (ViewBag.editPoBoard)
+                            {
+                                @Html.CheckBoxFor(m => m.amendment, new { @class = "minimal-red" })
+                            }
+                            else
+                            {
+                                @Html.CheckBoxFor(m => m.amendment, new { @class = "minimal-red", @disabled = "true" })
+                            }
+                            @Html.DisplayNameFor(m => m.amendment)
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            @if (ViewBag.editPoBoard)
+                            {
+                                @Html.CheckBoxFor(m => m.po_import, new { @class = "minimal-red", id = "input-po-import" })
+                            }
+                            else
+                            {
+                                @Html.CheckBoxFor(m => m.po_import, new { @class = "minimal-red", @disabled = "true", id = "input-po-import" })
+                            }
+                            @Html.DisplayNameFor(m => m.po_import)
+                        </label>
+                        <div class="dropdown pull-right" id="option-po-import">
+                            <button class="btn btn-info dropdown-toggle btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Pilih Aksi
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                @if (ViewBag.editPoBoard)
+                                {
+                                <li><a href="~/Po/POImport?po=@ViewBag.po">Edit</a></li>
+                                <li>
+                                    @Ajax.ActionLink(
+                                             linkText: "Hapus",
+                                             actionName: "POImportDelete",
+                                             controllerName: "Po",
+                                             //htmlAttributes: new { @class = "btn btn-default btn-block" },
+                                             routeValues: new
+                                             { po = ViewBag.po },
+                                             ajaxOptions: new AjaxOptions
+                                             {
+                                                 HttpMethod = "POST",
+                                                 OnBegin = "beginAction",
+                                                 OnSuccess = "successActionImport",
+                                                 OnFailure = "failurAction",
+                                                 //UpdateTargetId = "target-id-1",
+                                                 //InsertionMode = InsertionMode.InsertAfter,
+                                                 //LoadingElementId = "overlay1",
+                                                 OnComplete = "completeAction"
+                                             }
+                                         )
+                                </li>
+                                }
+                                else
+                                {
+                                    <li><a href="~/Po/POImport?po=@ViewBag.po">Lihat</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>
+                            @if (ViewBag.editPoBoard)
+                            {
+                                @Html.CheckBoxFor(m => m.negotiation, new { @class = "minimal-red" })
+                            }
+                            else
+                            {
+                                @Html.CheckBoxFor(m => m.negotiation, new { @class = "minimal-red", @disabled = "true" })
+                            }
+                            @Html.DisplayNameFor(m => m.negotiation)
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

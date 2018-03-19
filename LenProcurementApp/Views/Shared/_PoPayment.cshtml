@@ -1,0 +1,24 @@
+﻿@model IEnumerable<LenProcurementApp.Models.Payment>
+<div class="box box-primary">
+    <div class="box-header">
+        <div class="box-title">Status Pembayaran</div>
+    </div>
+    <div class="box-body">
+        @if(Model != null && Model.Count() > 0){
+            foreach(var item in Model){
+                <label>
+                    @Html.CheckBoxFor(m => item.status, new {@class="minimal-red", @disabled="true"})
+                    @item.payment
+                </label><span>&ensp;</span>
+            }
+        }
+        else
+        {
+            <span>Data Pembayaran belum tersedia.</span>
+        }
+    </div>
+    <div class="box-footer">
+        <a href="~/Po/PaymentBoard?po=@ViewBag.po" class="btn btn-primary btn-sm">Lihat Pembayaran</a>
+        <p class="pull-right text-danger text-bold" style="font-size:17px;">Sisa Tagihan: <span class="autoNum">@ViewBag.balance</span></p>
+    </div>
+</div>

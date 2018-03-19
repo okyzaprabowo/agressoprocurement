@@ -1,0 +1,29 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+
+
+# QLogTestConsole
+/LenAktivaTetap/QLogTestConsole/bin
+/LenAktivaTetap/QLogTestConsole/obj
+
+# ApatDataAccess
+/LenAktivaTetap/ApatDataAccess/bin
+/LenAktivaTetap/ApatDataAccess/obj
+
+# ApatLog
+/LenAktivaTetap/ApatLog/bin
+/LenAktivaTetap/ApatLog/obj
+
+# ApatWebApi
+/LenAktivaTetap/ApatWebApi/bin
+/LenAktivaTetap/ApatWebApi/obj
+
+# .VS
+/LenAktivaTetap/.vs
+
+bin/
+obj/
+.vs/
+debug/
+release/
+

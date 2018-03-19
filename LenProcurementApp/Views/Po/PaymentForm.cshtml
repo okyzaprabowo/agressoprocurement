@@ -1,0 +1,126 @@
+﻿@model LenProcurementApp.Models.Payment
+@{
+    ViewBag.Title = "Pembayaran PO";
+    ViewBag.SubTitle = ViewBag.po;
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    if (ViewBag.po == null)
+    {
+        return;
+    }
+}
+@if (ViewBag.success != null && ViewBag.success)
+{
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Berhasil disimpan.
+    </div>
+}
+else if (ViewBag.failed != null && ViewBag.failed)
+{
+    <div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <h4><i class="icon fa fa-check"></i> Informasi</h4>Data Gagal disimpan. Silahkan coba lagi atau hubungi Administrator.
+    </div>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+            @if (Model != null)
+            {
+                <h3 class="box-title">Ubah Pembayaran</h3>
+            }
+            else
+            {
+                <h3 class="box-title">Pembayaran Baru</h3>
+            }
+            </div><!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" method="post">
+                <div class="box-body">
+                @Html.HiddenFor(m => m.po)
+                @if(Model != null && Model.payment_id > 0)
+                {
+                    @Html.HiddenFor(m => m.payment_id)
+                }
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.payment, new { @class = "col-sm-4 control-label" })
+                                <div class="col-sm-8">
+                                    @Html.DropDownList(Html.NameFor(m => m.payment).ToString(), (IEnumerable<SelectListItem>)ViewBag.arrayPayment, "Pilih Pembayaran", new { @class = "form-control", @required = "true" })
+                                    @Html.ValidationMessageFor(m => m.payment)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.payment_method, new { @class = "col-sm-4 control-label" })
+                                <div class="col-sm-8">
+                                    @Html.DropDownList(Html.NameFor(m => m.payment_method).ToString(), (IEnumerable<SelectListItem>)ViewBag.arrayMethod, "Pilih Metode", new { @class = "form-control", @required = "true" })
+                                    @Html.ValidationMessageFor(m => m.payment_method)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.payment_schedule, new { @class = "col-sm-4 control-label" })
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control datepicker" name="@Html.NameFor(m=>m.payment_schedule)" value="@Model.payment_schedule.ToShortDateString()" />
+                                    @Html.ValidationMessageFor(m => m.payment_schedule)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.claim_value, new { @class = "col-sm-4 control-label" })
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(m => m.claim_value, new { @class = "form-control autoNum" })
+                                    @Html.ValidationMessageFor(m => m.claim_value)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.claim_date, new { @class = "col-sm-4 control-label" })
+                                <div class="col-sm-8">
+                                    @*@Html.TextBoxFor(m => m.claim_date, new { @class = "form-control datepicker" })*@
+                                    <input type="text" class="form-control datepicker" name="@Html.NameFor(m=>m.claim_date)" value="@Model.claim_date.ToShortDateString()" />
+                                    @Html.ValidationMessageFor(m => m.claim_date)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.status, new { @class = "col-sm-4 control-label" })
+                                <div class="col-sm-8">
+                                    @Html.DropDownList(Html.NameFor(m => m.status).ToString(), (IEnumerable<SelectListItem>)ViewBag.arrayStatus, "Pilih Status", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.status)
+                                </div>
+                            </div>
+                            @if (ViewBag.isImport != null && ViewBag.isImport == true)
+                            {
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.import_tax, new { @class = "col-sm-4 control-label" })
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList(Html.NameFor(m => m.import_tax).ToString(), (IEnumerable<SelectListItem>)ViewBag.arrayImportTax, "Pilih Status", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.import_tax)
+                                    </div>
+                                </div>
+                            }
+                            
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.note, new { @class = "col-sm-2 control-label" })
+                                <div class="col-sm-10">
+                                    @Html.TextAreaFor(m => m.note, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.payment)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <a href="~/Po/PaymentBoard?po=@ViewBag.po" class="btn btn-default">Kembali ke Pembayaran</a>
+                    <button type="submit" class="btn btn-primary pull-right">Simpan</button>
+                    @if (Model != null && Model.payment_id > 0)
+                    {
+                        <a onclick="return confirm('Anda yakin akan menghapus data ini?')" href="~/Po/PaymentDelete/@Model.payment_id?po=@ViewBag.po" class="btn btn-danger pull-right margin-right">Hapus</a>
+                    }
+                </div><!-- /.box-footer -->
+            </form>
+        </div>
+    </div>
+</div>
